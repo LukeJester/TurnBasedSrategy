@@ -35,8 +35,9 @@ public class ShootAction : BaseAction
     private Unit targetUnit;
     private bool canShootBullet;
 
+    //some Weapon Vriables that need to get moved
     private int maxShootDistance = 4;
-    private int weaponDamage = 25;
+    private int weaponDamage = 50;
 
     private void Update()
     {

@@ -1,21 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HealthSystem : MonoBehaviour
 {
+
+    public event EventHandler OnDead;
+
     [SerializeField] private int health = 100;
-
-    void Start()
-    {
-        
-    }
-
-
-    void Update()
-    {
-        
-    }
 
     public void Damage(int damageAmount)
     {
@@ -25,5 +19,15 @@ public class HealthSystem : MonoBehaviour
         {
             health = 0;
         }
+
+        if (health == 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        OnDead?.Invoke(this, EventArgs.Empty);
     }
 }

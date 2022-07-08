@@ -62,4 +62,10 @@ public class UnitSelectedVisual : MonoBehaviour
             }
         }
     }
+
+    private void OnDestroy() // can change this to a subscription to the die even in the health system to be more genaric
+    {
+        UnitActionSystem.Instance.OnSelectedUnitChanged -= UnitActionSystem_OnSelectedUnitChanged;
+        TurnSystem.Instance.OnTurnChange -= TurnSystem_OnTurnChange;
+    }
 }

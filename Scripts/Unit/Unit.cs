@@ -33,6 +33,8 @@ public class Unit : MonoBehaviour
         LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
 
         TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
+
+        healthSystem.OnDead += healthSystem_OnDead;
     }
 
     private void Update()
@@ -130,5 +132,12 @@ public class Unit : MonoBehaviour
     public void Damage(int damageAmount)
     {
         healthSystem.Damage(damageAmount);
+    }
+
+    private void healthSystem_OnDead(object sender, EventArgs e)
+    {
+        LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+        
+        Destroy(gameObject); // can change to play a deaht animation and or an explosion for the mechs
     }
 }
