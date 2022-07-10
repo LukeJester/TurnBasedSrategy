@@ -6,12 +6,19 @@ using System;
 public class UnitAnimator : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+
     //I think i might make this be a feild on the weapon script, that is called by this script thought the ation to the wepon script
-    [SerializeField] private Transform bulletProjectilePrefab;
-    [SerializeField] private Transform shootPointTransform;
+    // [SerializeField] private Transform bulletProjectilePrefab;
+    // [SerializeField] private Transform shootPointTransform;
+    private Transform bulletProjectilePrefab;
+    private Transform shootPointTransform;
+
 
     private void Awake()
     {
+        //replace below code with this if you want later
+        //child.TryGetComponent<MoveAction>(out MoveAction moveAction)
+
         MoveAction moveAction = GetComponentInChildren<MoveAction>();
         if (moveAction != null)
         {
@@ -40,16 +47,11 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.SetTrigger("shoot");
 
-        //Maybe a event to call the weapon script?
-
-        Transform bulletProjectileTransform =  Instantiate(bulletProjectilePrefab, shootPointTransform.position, Quaternion.identity);
+        Transform bulletProjectileTransform =  Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
         BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
         
-        //shoot at the target with the y valuse the same as bullets inital y value
-        //must change to be dynamic for multiple stores/taller units
-        //Will add in dynamic targets (they will be empty game objects on the mech parts so you can target teh mech or its parts)
         Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
-        targetUnitShootAtPosition.y = shootPointTransform.position.y;
+        targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
         bulletProjectile.SetUp(targetUnitShootAtPosition);
     }
 }

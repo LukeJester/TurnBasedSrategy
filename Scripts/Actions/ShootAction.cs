@@ -16,6 +16,8 @@ public class ShootAction : BaseAction
     {
         public Unit targetUnit;
         public Unit shootingUnit;
+        public Transform bulletProjectilePrefab;
+        public Transform shootPointTransform;
     }
 
     private enum State // for the camera change when shooting like in Mutant: year zero but in Wastland 3 it dosent
@@ -30,14 +32,27 @@ public class ShootAction : BaseAction
     [SerializeField] private float shootingStateTime = 0.1f;
     [SerializeField] private float cooloffStateTime = 0.5f;
 
+    [SerializeField] RangedWeapon rangedWeapon;
+
     private State state;
     private float stateTimer;
     private Unit targetUnit;
     private bool canShootBullet;
 
-    //some Weapon Vriables that need to get moved
-    private int maxShootDistance = 4;
-    private int weaponDamage = 50;
+    //Weapon Variables
+    private int maxShootDistance;
+    private int weaponDamage;
+    private Transform bulletProjectilePrefab;
+    private Transform shootPointTransform;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        maxShootDistance = rangedWeapon.GetWeaponRange();
+        weaponDamage = rangedWeapon.GetWeaponDamage();
+        bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
+        shootPointTransform = rangedWeapon.GetShootPointTransform();
+    }
 
     private void Update()
     {
@@ -73,8 +88,11 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
-        OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit});
+        OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab  = bulletProjectilePrefab , shootPointTransform = shootPointTransform });
 
+        //Note for coppying code to make the Overcharged shot action
+        //Some Actions can be placed on a weapon other that the base shoot
+        //EX overload where targetUnit.Damage(weaponDamage * 2f); , cost extra AP, and damage weapon
         targetUnit.Damage(weaponDamage);
     }
 
@@ -121,18 +139,22 @@ public class ShootAction : BaseAction
         return 2;
     }
 
-    public override List<GridPosition> GetValidActionGridPositionList() 
+    public override List<GridPosition> GetValidActionGridPositionList()
+    {
+        GridPosition unitGridPosition = unit.GetGridPosition();
+        return GetValidActionGridPositionList(unitGridPosition);
+    }
+
+    public List<GridPosition> GetValidActionGridPositionList(GridPosition UnitGridPosition) 
     {
         List<GridPosition> validGridPositionList = new List<GridPosition>();
-
-        GridPosition unitGridPosition = unit.GetGridPosition();
 
         for (int x = -maxShootDistance; x <= maxShootDistance; x++)
         {
             for (int z = -maxShootDistance; z <= maxShootDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
-                GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
+                GridPosition testGridPosition = UnitGridPosition + offsetGridPosition;
 
                 if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
                     continue;
@@ -158,13 +180,40 @@ public class ShootAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
-
         targetUnit = LevelGrid.Instance.getUnitAtGridPosition(gridPosition);
 
         state = State.Aiming;
         stateTimer = AimingStateTime;
 
         canShootBullet = true;
+
+        ActionStart(onActionComplete);
+    }
+
+    public Unit GetTargetUnit()
+    {
+        return targetUnit;
+    }
+
+    public int GetMaxShootDistance()
+    {
+        return maxShootDistance;
+    }
+
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+        Unit targetUnit = LevelGrid.Instance.getUnitAtGridPosition(gridPosition);
+        
+        
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = 100 + Mathf.RoundToInt((1 - targetUnit.GetHealthNormilized()) * 100f),
+        };
+    }
+
+    public int GetTargetCountAtPosition(GridPosition gridPosition)
+    {
+        return GetValidActionGridPositionList(gridPosition).Count;
     }
 }

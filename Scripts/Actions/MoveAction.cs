@@ -38,6 +38,7 @@ public class MoveAction : BaseAction
 
                 // for animation
                 OnStopMoving?.Invoke(this, EventArgs.Empty);
+                
                 ActionComplete();
             }
 
@@ -52,11 +53,11 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        ActionStart(onActionComplete);
-
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
         // for animation
         OnStartMoving?.Invoke(this , EventArgs.Empty);
+
+        ActionStart(onActionComplete);
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
@@ -97,5 +98,15 @@ public class MoveAction : BaseAction
     {
         return 1;
     }
-    
+
+    public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
+    {
+         int targetCountAtGridPosition = unit.GetAction<ShootAction>().GetTargetCountAtPosition(gridPosition);
+        
+        return new EnemyAIAction
+        {
+            gridPosition = gridPosition,
+            actionValue = targetCountAtGridPosition * 10,
+        };
+    }
 }

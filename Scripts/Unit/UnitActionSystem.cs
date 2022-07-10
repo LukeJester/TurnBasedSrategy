@@ -60,7 +60,7 @@ public class UnitActionSystem : MonoBehaviour
 
             if(selectedAction.IsValidActionGridPosition(mouseGridPosition))  
             {
-                if(selectedUnit.TrySpendActionointsToTakeAction(selectedAction))
+                if(selectedUnit.TrySpendActionPointsToTakeAction(selectedAction))
                 {
                     SetBusy();
                     selectedAction.TakeAction(mouseGridPosition, ClearBusy);
@@ -114,7 +114,7 @@ public class UnitActionSystem : MonoBehaviour
         selectedUnit = unit;
         if(selectedUnit == null)
             return;
-        SetSelectedAction(unit.getMoveAction());
+        SetSelectedAction(unit.GetAction<MoveAction>());
 
         OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
     }

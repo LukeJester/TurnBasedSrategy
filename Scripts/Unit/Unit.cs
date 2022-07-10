@@ -8,13 +8,13 @@ public class Unit : MonoBehaviour
     private const int Action_Point_Max = 2;
 
     public static event EventHandler OnAnyActionPointsChanged;
+    public static event EventHandler OnAnyUnitSpawned;
+    public static event EventHandler OnAnyUnitDead;
 
     [SerializeField] private bool isEnemy;
 
     private GridPosition gridPosition;
     private HealthSystem healthSystem;
-    private MoveAction moveAction;
-    private SpinAction spinAction;
     private BaseAction[] baseActionArray;
     private int actionPoints = Action_Point_Max;
     
@@ -22,8 +22,6 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
-        moveAction = GetComponentInChildren<MoveAction>();
-        spinAction = GetComponentInChildren<SpinAction>();
         baseActionArray = GetComponentsInChildren<BaseAction>();
     }
 
@@ -35,6 +33,8 @@ public class Unit : MonoBehaviour
         TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
 
         healthSystem.OnDead += healthSystem_OnDead;
+
+        OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
     }
 
     private void Update()
@@ -42,19 +42,24 @@ public class Unit : MonoBehaviour
         GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         if(newGridPosition != gridPosition)
         {
-            LevelGrid.Instance.UnitMoveGridPosititon(this, gridPosition, newGridPosition);
+            //Unit Change Grid Position
+            GridPosition oldGrisPosition = gridPosition;
             gridPosition = newGridPosition;
+
+            LevelGrid.Instance.UnitMoveGridPosititon(this, oldGrisPosition, newGridPosition);   
         }
     }
 
-    public MoveAction getMoveAction()
+    public T GetAction<T>() where T : BaseAction
     {
-        return moveAction;
-    }
-
-    public SpinAction getSpinAction()
-    {
-        return spinAction;
+        foreach(BaseAction baseAction in baseActionArray)
+        {
+            if(baseAction is T)
+            {
+                return (T)baseAction;
+            }
+        }
+        return null;
     }
 
     public GridPosition GetGridPosition()
@@ -72,7 +77,7 @@ public class Unit : MonoBehaviour
         return baseActionArray;
     }
 
-    public bool TrySpendActionointsToTakeAction(BaseAction baseAction)
+    public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
     {
         if(CanSpenActionPointsToTakeAction(baseAction))
         {
@@ -139,5 +144,12 @@ public class Unit : MonoBehaviour
         LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
         
         Destroy(gameObject); // can change to play a deaht animation and or an explosion for the mechs
+
+        OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
+    }
+
+    public float GetHealthNormilized()
+    {
+        return healthSystem.GetHealthNormilized();
     }
 }
