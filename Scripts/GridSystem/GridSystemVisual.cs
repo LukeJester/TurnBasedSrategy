@@ -21,7 +21,9 @@ public class GridSystemVisual : MonoBehaviour
         Blue,
         Red,
         Yellow,
-        RedSoft
+        RedSoft,
+        Green,
+        GreenSoft
     }
     
     [SerializeField] Transform GridSystemVisualSinglePrefab;
@@ -48,6 +50,7 @@ public class GridSystemVisual : MonoBehaviour
 
         UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
         LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
+        Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
 
         UpdateGridVisual();
     }
@@ -146,6 +149,11 @@ public class GridSystemVisual : MonoBehaviour
     }
 
     private void LevelGrid_OnAnyUnitMoveGridPosition(object sender, EventArgs e)
+    {
+        UpdateGridVisual();
+    }
+
+    private void Unit_OnAnyUnitDead(object sender, EventArgs e)
     {
         UpdateGridVisual();
     }
