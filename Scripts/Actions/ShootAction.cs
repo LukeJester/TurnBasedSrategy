@@ -27,6 +27,8 @@ public class ShootAction : BaseAction
         cooloff
     }
 
+    [SerializeField] private LayerMask obstacledLayerMask;
+
     //timess spent in each of the shooting state
     [SerializeField] private float AimingStateTime = 1f;
     [SerializeField] private float shootingStateTime = 0.1f;
@@ -170,6 +172,12 @@ public class ShootAction : BaseAction
                 
                 if(targetUnit.IsEnemy() == unit.IsEnemy())
                     continue; //cant attack units on the same side 
+
+                Vector3 unitWorlPositon = LevelGrid.Instance.GetWorldPosition(UnitGridPosition);
+                Vector3 shoorDirection = (targetUnit.GetWorldPosition() - unitWorlPositon).normalized;
+                float unitSholderHeight = 1.7f; //needs to chane dependent on the height of the enemy
+                if (Physics.Raycast(unitWorlPositon + Vector3.up *unitSholderHeight, shoorDirection, Vector3.Distance(unitWorlPositon, targetUnit.GetWorldPosition()), obstacledLayerMask))
+                    continue; //No Line of Sight
 
                 validGridPositionList.Add(testGridPosition);
             }
