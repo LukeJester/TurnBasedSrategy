@@ -10,6 +10,7 @@ public class ShootAction : BaseAction
     //this was shown as an option in section 4 of the course I think
     // Or I could use a check if GetComponentInParent<Weapon Script> not nulln then use that section of code
 
+    public static event EventHandler<OnShootEventArgs> OnAnyShoot;
     public event EventHandler<OnShootEventArgs> OnShoot;
 
     public class OnShootEventArgs : EventArgs
@@ -90,6 +91,7 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
+        OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
         OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab  = bulletProjectilePrefab , shootPointTransform = shootPointTransform });
 
         //Note for coppying code to make the Overcharged shot action
