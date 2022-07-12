@@ -5,18 +5,9 @@ using UnityEngine;
 
 public class GrenadeAction : BaseAction
 {
-
     [SerializeField] private Transform grenadeProjectilePrefab;
 
     private int maxThrowDistance = 5;
-
-    private void Update()
-    {
-        if (!isActive)
-            return;
-
-        ActionComplete();
-    }
 
     public override string GetActionName()
     {

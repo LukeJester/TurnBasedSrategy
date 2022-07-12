@@ -12,7 +12,7 @@ public class MoveAction : BaseAction
     [SerializeField] float moveSpeed = 4f;
     [SerializeField] float rotateSpeed = 10f;
     [SerializeField] float stoppingDistance = 0.1f;
-    [SerializeField] private int maxMoveDistance = 4;
+    [SerializeField] private int maxMoveDistance = 7;
 
     private List<Vector3> positionList;
     private int curretnPositionIndex;
@@ -84,7 +84,7 @@ public class MoveAction : BaseAction
                 if(!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
                     continue;
 
-                int testDistance = (int)Mathf.Round(Mathf.Sqrt((x * x) + (z * z) * 2));
+                int testDistance = (int)Mathf.Round(Mathf.Sqrt((x * x) + (z * z)));
                 //int testDistance = Mathf.Abs(x) + Mathf.Abs(z); // old square patern
                 if (testDistance > maxMoveDistance)
                     continue; // make X-COM walk patern

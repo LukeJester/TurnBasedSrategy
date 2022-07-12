@@ -140,7 +140,7 @@ public class ShootAction : BaseAction
     {
         //return the AP of the wepon that this action is attached to/ might be in weapon script(mech weapon part)
         //int  weaponAPCost =  this.gameObject.GetComponentInParent<MechWeaponPart>().GetWeaponActionPointCost();
-        return 2;
+        return 1;
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
