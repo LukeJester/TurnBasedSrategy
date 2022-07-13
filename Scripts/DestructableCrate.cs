@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class DestructableCrate : MonoBehaviour
+public class DestructableCrate : MonoBehaviour, IDestructable
 {
 
     public static event EventHandler OnAnyDestroyed;
@@ -25,7 +25,7 @@ public class DestructableCrate : MonoBehaviour
         return gridPosition;
     }
 
-    public void Damage()
+    public void Destroy(Action OnInteractionComplete)
     {
         Transform crateDestroyedTransform = Instantiate(crateDestroyedPrefab, transform.position, transform.rotation);
 
@@ -47,5 +47,4 @@ public class DestructableCrate : MonoBehaviour
             ApplyExploasionToChildren(child, exploasionForce, exploaionposition, exploaionRange);
         }
     }
-
 }

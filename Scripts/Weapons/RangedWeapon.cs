@@ -11,6 +11,9 @@ public class RangedWeapon : MonoBehaviour
     //For SpawnedBullet
     [SerializeField] private Transform bulletProjectilePrefab;
     [SerializeField] private Transform shootPointTransform;
+    //musssle flach VFX , can be smoke for rocket
+    //animation overide for different weapons  / and or 
+
 
     //For shooting multiple rockets, I can change the private Transform shootPointTransform; into a list and place the rocket positions inside of where the rockets will sit
 

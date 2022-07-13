@@ -45,9 +45,9 @@ public class GrenadeProjectile : MonoBehaviour
                     targetUnit.Damage(explosionDamage);
                 }
 
-                if (collider.TryGetComponent<DestructableCrate>(out DestructableCrate destructableCrate))
+                if (collider.TryGetComponent<IDestructable>(out IDestructable destructable))
                 {
-                    destructableCrate.Damage();
+                    destructable.Destroy(OnGrenadeBehaviorComplete);
                 }
             }
 

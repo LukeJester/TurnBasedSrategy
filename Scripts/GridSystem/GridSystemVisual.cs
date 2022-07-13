@@ -90,6 +90,26 @@ public class GridSystemVisual : MonoBehaviour
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
+    private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    continue;
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+
+        ShowGridPositionList(gridPositionList, gridVisualType);
+    }
+
     public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
     {
         foreach(GridPosition gridPosition in gridPositionList)
@@ -112,6 +132,8 @@ public class GridSystemVisual : MonoBehaviour
             default:
             case MoveAction moveAction:
                 gridVisualType = GridVisualType.White;
+                //could add walk range visual like in XCOM
+                // OR make each tile movment 1 AP and in the move action show full move range with currnet AP
                 break;
             case SpinAction spinAction:
                 gridVisualType = GridVisualType.Blue;
@@ -120,6 +142,20 @@ public class GridSystemVisual : MonoBehaviour
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
+                break;
+            case GrenadeAction grenadeAction:
+                gridVisualType = GridVisualType.RedSoft;
+                break;
+            case createCrateAction createCrateAction:
+                gridVisualType = GridVisualType.Yellow;
+                break;
+            case MeleeAction meleeAction:
+                gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), meleeAction.GetMaxMeleeDistance(), GridVisualType.RedSoft);
+                break;
+            case InteractAction interactAction:
+                gridVisualType = GridVisualType.Blue;
                 break;
         }
 

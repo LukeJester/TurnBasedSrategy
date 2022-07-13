@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class createCrateAction : BaseAction
 {
-    [SerializeField] private int maxPlacmentDistance = 3;
+    //I ca upgrade this with increasing range (trowing the cover)
+    //Increase the damage the cover can take
+    //allowing you to expload the cover to hurt enemys (Can instaniate a empty GO with the explad crate script on it to the unit that did it, adds its self to a list on that script pe unit, cost one ap to explaod them each?)
+
+    //need to change the crate out for a expandable baricade
+    [SerializeField] private int maxPlacmentDistance = 1;
     [SerializeField] Transform CratePrefab;
 
     private void Update()
@@ -54,7 +59,6 @@ public class createCrateAction : BaseAction
 
                 if (!Pathfinding.Instance.IsWalkableGridPosition(testGridPosition))
                     continue; // not walkable tile
-
 
                 validGridPositionList.Add(testGridPosition);
             }

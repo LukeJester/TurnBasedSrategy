@@ -80,7 +80,11 @@ public class MoveAction : BaseAction
             {
                 GridPosition offsetGridPosition = new GridPosition(x,z);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
-                
+
+                // make each tile movment 1 AP (move one rang) and in the move action show full move range with currnet AP
+                // pass current AP for unit into LevelGrid.Instance.IsValidGridPosition(testGridPosition, Unit.GetCurrentAP)
+                //and have standered float AP = 1 in the IsValidGridPosition, so it wont mess with other actions
+                //maybe in IsValidGridPosition I miltiple gride position by remaning AP?
                 if(!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
                     continue;
 
