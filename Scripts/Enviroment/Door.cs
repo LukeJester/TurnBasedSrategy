@@ -13,10 +13,13 @@ public class Door : MonoBehaviour, IInteractable
     private Action OnInteractionComplete;
     private float timer;
     private bool isActive;
+    private BoxCollider boxCollider;
+    private bool canInteract = true;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     private void Start()
@@ -68,6 +71,7 @@ public class Door : MonoBehaviour, IInteractable
     private void OpenDoor()
     {
         isOpen = true;
+        boxCollider.enabled = false;
         animator.SetBool("isOpen", isOpen);
         Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, true);
     }
@@ -75,8 +79,41 @@ public class Door : MonoBehaviour, IInteractable
     private void CloseDoor()
     {
         isOpen = false;
+        boxCollider.enabled = true;
         animator.SetBool("isOpen", isOpen);
         Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, false);
 
+    }
+
+    public bool CanInteract()
+    {
+        if (isOpen)
+        {
+            TestIfDoorIsBlocked();
+        }
+        else
+        {
+            canInteract = true;
+        }
+
+        return canInteract;
+    }
+
+    private void TestIfDoorIsBlocked()
+    {
+        GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+        float rayCastOffsetDistance = 5f;
+
+        RaycastHit rayOut;
+        Physics.Raycast(worldPosition + Vector3.down * rayCastOffsetDistance, Vector3.up, out rayOut);
+        if (rayOut.collider != null)
+        {
+            canInteract = false;
+        }
+        else
+        {
+            canInteract = true;
+        }  
     }
 }

@@ -68,4 +68,9 @@ public class InteractShpere : MonoBehaviour, IInteractable
             SetColorGreen();
         }
     }
+
+    public bool CanInteract()
+    {
+        return true;
+    }
 }

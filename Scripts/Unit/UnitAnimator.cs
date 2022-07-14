@@ -15,6 +15,8 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] Transform rifleTransform;
     [SerializeField] Transform meleeWeaponTransform;
 
+    Unit unit;
+
     private void Awake()
     {
         //replace below code with this if you want later
@@ -39,6 +41,9 @@ public class UnitAnimator : MonoBehaviour
             meleeAction.OnMeleeActionStarted += meleeAction_OnMeleeActionStarted;
             meleeAction.OnMeleeActionCompleted += meleeAction_OnMeleeActionCompleted;
         }
+
+        unit = GetComponent<Unit>();
+        unit.OnCoverStateChanged += unit_OnCoverStateChanged;
     }
 
     private void Start()
@@ -59,6 +64,7 @@ public class UnitAnimator : MonoBehaviour
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
     {
+        animator.SetBool("inCover", false);
         animator.SetBool("isWalking", true);
     }
 
@@ -77,6 +83,19 @@ public class UnitAnimator : MonoBehaviour
         Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
         targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
         bulletProjectile.SetUp(targetUnitShootAtPosition);
+    }
+
+    private void unit_OnCoverStateChanged(object sender, EventArgs e)
+    {
+        if (unit.GetCoverType() == CoverType.None)
+        {
+            animator.SetBool("inCover", false);
+        }
+        else
+        {
+            animator.SetBool("inCover", true);
+        }
+        
     }
 
    private void EquipMeleeWeapon()

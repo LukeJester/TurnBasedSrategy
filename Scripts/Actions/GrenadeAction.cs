@@ -43,6 +43,9 @@ public class GrenadeAction : BaseAction
                 if (testDistance > maxThrowDistance)
                     continue; // make circul range
 
+                if (UnitGridPosition == testGridPosition)
+                    continue; //already standing there
+
                 validGridPositionList.Add(testGridPosition);
             }
         }

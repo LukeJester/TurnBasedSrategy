@@ -52,6 +52,10 @@ public class Pathfinding : MonoBehaviour
                     ObstaclesLayerMask))
                     {
                         GetNode(x,z).SetIsWalkable(false);
+                        // This can also be done for flying Enemys!!! Just make it so that they cant fly onto a not walkable area
+                        // This will kinda creat a whole diffrent pathfinding grid for flying enimes, where they can choose what have a better cost
+                        // flying over the rock or walking around it
+                        // need a way to know if a grid is flyable EI, crates can be flown over but not wall with roofs.
                     }
             }
         }

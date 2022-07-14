@@ -10,6 +10,8 @@ public class PathNode
     private int fCost;
     private PathNode cameFromPathNode;
     private bool isWalkable = true;
+    //private bool isFlyable = true; // pathfinding for flying enemies
+
 
     public PathNode(GridPosition gridPosition)
     {
@@ -51,7 +53,7 @@ public class PathNode
         fCost = gCost + hCost;
     }
 
-    public void ResetCameFromPathNode()
+    public void ResetCameFromPathNode() 
     {
         cameFromPathNode = null;
     }
@@ -80,4 +82,13 @@ public class PathNode
         this.isWalkable = isWalkable;
     }
 
+    // public bool IsFlyable()
+    // {
+    //     return isWalkable;
+    // }
+
+    // public void SetIsFlyable(bool isFlyable)
+    // {
+    //     this.isFlyable = isFlyable;
+    // }
 }

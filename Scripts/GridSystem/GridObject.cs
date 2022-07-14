@@ -8,6 +8,7 @@ public class GridObject
     private GridPosition gridPosition;
     private List<Unit> unitList;
     private IInteractable interactable;
+    private CoverType coverType;
 
     private bool canBeInteravtedWith; // bool I can chege when making hte level? make it auto if a 3d ojcet is in its area
 
@@ -69,5 +70,15 @@ public class GridObject
     public void SetInteractable(IInteractable interactable)
     {
         this.interactable = interactable;
+    }
+
+    public void SetCoverType(CoverType coverType)
+    {
+        this.coverType = coverType;
+    }
+
+    public CoverType GetCoverType()
+    {
+        return coverType;
     }
 }

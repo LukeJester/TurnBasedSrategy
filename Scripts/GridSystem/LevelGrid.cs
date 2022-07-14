@@ -31,11 +31,45 @@ public class LevelGrid : MonoBehaviour
 
         gridSystem = new GridSystem<GridObject>(width, height, cellSize, (GridSystem<GridObject> g, GridPosition gridPosition) => new GridObject(g, gridPosition));
         //gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+
+        UpdateCoverGridPositions(width, height, cellSize);
     }
 
     private void Start()
     {
         Pathfinding.Instance.Setup(width, height, cellSize);
+
+        DestructableCrate.AfterAnyDestroyed += DestructableCrate_AfterAnyDestroyed;
+        DestructableCrate.OnAnyPlacment += DestructableCrate_OnAnyPlacment;
+    }
+
+    public void UpdateCoverGridPositions(int width, int height, float cellSize)
+    {
+        this.width = width;
+        this.height = height;
+        this.cellSize = cellSize;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                GridPosition gridPosition = new GridPosition(x, z);
+                Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+                float rayCastOffsetDistance = 5f;
+
+                RaycastHit rayOut;
+                Physics.Raycast(worldPosition + Vector3.down * rayCastOffsetDistance, Vector3.up, out rayOut);
+                if (rayOut.collider != null && rayOut.collider.GetComponent<Cover>())
+                {
+                    Cover coverObject = rayOut.collider.GetComponent<Cover>();
+                    gridSystem.GetGridObject(gridPosition).SetCoverType(coverObject.GetCoverType());
+                }
+                else
+                {
+                    gridSystem.GetGridObject(gridPosition).SetCoverType(CoverType.None); // doesnt work due to the Destroy call on the crate running after this/thus still being in the world
+                }
+            }
+        }
     }
 
     public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
@@ -96,5 +130,63 @@ public class LevelGrid : MonoBehaviour
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         gridObject.SetInteractable(interactable);
+    }
+
+    public CoverType GetCoverTypeAtPosition(Vector3 worldPosition)
+    {
+        GridPosition gridPosition = gridSystem.GetGridPosition(worldPosition);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        return gridObject.GetCoverType();
+    }
+
+    public CoverType GetUnitCoverType(Vector3 worldPosition) // where I can add the is Wakable check
+    {
+        GridPosition gridPosition = gridSystem.GetGridPosition(worldPosition);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+
+        // Find closest cover to this position
+        
+        bool hasLeft = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x - 1, gridPosition.z + 0));
+        bool hasRight = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 1, gridPosition.z + 0));
+        bool hasFront = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 0, gridPosition.z + 1));
+        bool hasBack = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 0, gridPosition.z - 1));
+
+        CoverType leftCover, rightCover, frontCover, backCover;
+        leftCover = rightCover = frontCover = backCover = CoverType.None;
+
+        if (hasLeft) leftCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x - 1, gridPosition.z + 0)).GetCoverType();
+        if (hasRight) rightCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 1, gridPosition.z + 0)).GetCoverType();
+        if (hasFront) frontCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 0, gridPosition.z + 1)).GetCoverType();
+        if (hasBack) backCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 0, gridPosition.z - 1)).GetCoverType();
+
+        if (leftCover == CoverType.Full ||
+            rightCover == CoverType.Full ||
+            frontCover == CoverType.Full ||
+            backCover == CoverType.Full)
+        {
+            // At least one Full Cover
+            return CoverType.Full;
+        }
+
+        if (leftCover == CoverType.Half ||
+            rightCover == CoverType.Half ||
+            frontCover == CoverType.Half ||
+            backCover == CoverType.Half)
+        {
+            // At least one Half Cover
+            return CoverType.Half;
+        }
+
+        return CoverType.None;
+    }
+
+    private void DestructableCrate_AfterAnyDestroyed(object sender, EventArgs e)
+    {
+        UpdateCoverGridPositions(this.width, this.height, this.cellSize);
+    }
+
+    private void DestructableCrate_OnAnyPlacment(object sender, EventArgs e)
+    {
+        UpdateCoverGridPositions(this.width, this.height, this.cellSize);
     }
 }

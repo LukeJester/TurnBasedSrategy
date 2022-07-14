@@ -10,6 +10,8 @@ public class Unit : MonoBehaviour
     public static event EventHandler OnAnyActionPointsChanged;
     public static event EventHandler OnAnyUnitSpawned;
     public static event EventHandler OnAnyUnitDead;
+    public static event EventHandler OnAnyCoverStateChanged;
+    public event EventHandler OnCoverStateChanged;
 
     [SerializeField] private bool isEnemy;
 
@@ -17,6 +19,8 @@ public class Unit : MonoBehaviour
     private HealthSystem healthSystem;
     private BaseAction[] baseActionArray;
     private int actionPoints = Action_Point_Max;
+    private CoverType currentCoverType;
+    private CoverType newCoverType;
     
 
     private void Awake()
@@ -35,6 +39,11 @@ public class Unit : MonoBehaviour
         healthSystem.OnDead += healthSystem_OnDead;
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
+
+        DestructableCrate.AfterAnyDestroyed += DestructableCrate_AfterAnyDestroyed;
+        DestructableCrate.OnAnyPlacment += DestructableCrate_OnAnyPlacment;
+
+        UpdateCoverType();
     }
 
     private void Update()
@@ -46,8 +55,30 @@ public class Unit : MonoBehaviour
             GridPosition oldGrisPosition = gridPosition;
             gridPosition = newGridPosition;
 
-            LevelGrid.Instance.UnitMoveGridPosititon(this, oldGrisPosition, newGridPosition);   
+            LevelGrid.Instance.UnitMoveGridPosititon(this, oldGrisPosition, newGridPosition);
+
+            UpdateCoverType(); // could move this to the completion of the move action
         }
+    }
+
+    private void UpdateCoverType() 
+    {
+        newCoverType = LevelGrid.Instance.GetUnitCoverType(transform.position);
+
+        if (newCoverType == currentCoverType)
+            return;
+
+        currentCoverType = newCoverType;
+
+        //Debug.Log(currentCoverType);
+
+        OnCoverStateChanged?.Invoke(this, EventArgs.Empty);
+        OnAnyCoverStateChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public CoverType GetCoverType()
+    {
+        return currentCoverType;
     }
 
     public T GetAction<T>() where T : BaseAction
@@ -146,6 +177,22 @@ public class Unit : MonoBehaviour
         Destroy(gameObject); // can change to play a deaht animation and or an explosion for the mechs
 
         OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
+
+        DestructableCrate.AfterAnyDestroyed -= DestructableCrate_AfterAnyDestroyed;
+        DestructableCrate.OnAnyPlacment -= DestructableCrate_OnAnyPlacment;
+    }
+
+    private void DestructableCrate_AfterAnyDestroyed(object sender, EventArgs e)
+    {
+        if (this == null)
+            return;
+            
+        UpdateCoverType();
+    }
+
+    private void DestructableCrate_OnAnyPlacment(object sender, EventArgs e)
+    {
+        UpdateCoverType();
     }
 
     public float GetHealthNormilized()

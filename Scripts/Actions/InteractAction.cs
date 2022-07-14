@@ -47,7 +47,10 @@ public class InteractAction : BaseAction
                 IInteractable interactable = LevelGrid.Instance.GetInteractableAtGridPosition(testGridPosition);
                 
                 if(interactable == null)
-                    continue; //No Door at this position 
+                    continue; //No interactable at this position
+
+                if(!interactable.CanInteract())
+                    continue;  // cant interact with this object
 
                 validGridPositionList.Add(testGridPosition);
             }

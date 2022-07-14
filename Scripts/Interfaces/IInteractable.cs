@@ -7,5 +7,6 @@ public interface IInteractable
 {
     
     void Interact(Action OnInteractionComplete);
-    
+
+    bool CanInteract();
 }

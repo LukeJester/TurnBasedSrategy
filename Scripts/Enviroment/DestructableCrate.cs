@@ -7,6 +7,7 @@ public class DestructableCrate : MonoBehaviour, IDestructable
 {
 
     public static event EventHandler OnAnyDestroyed;
+    public static event EventHandler AfterAnyDestroyed;
     public static event EventHandler OnAnyPlacment;
 
     [SerializeField] Transform crateDestroyedPrefab;
@@ -46,5 +47,10 @@ public class DestructableCrate : MonoBehaviour, IDestructable
 
             ApplyExploasionToChildren(child, exploasionForce, exploaionposition, exploaionRange);
         }
+    }
+
+    private void OnDestroy()
+    {
+        AfterAnyDestroyed?.Invoke(this, EventArgs.Empty);
     }
 }
