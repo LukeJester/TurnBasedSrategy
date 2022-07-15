@@ -143,7 +143,7 @@ public class GridSystemVisual : MonoBehaviour
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                 break;
-            case GrenadeAction grenadeAction:
+            case GrenadeAction grenadeAction: // would i add the explaoion grid effected area here?
                 gridVisualType = GridVisualType.RedSoft;
                 break;
             case createCrateAction createCrateAction:

@@ -6,16 +6,12 @@ using System;
 public class UnitAnimator : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-
-    //I think i might make this be a feild on the weapon script, that is called by this script thought the ation to the wepon script
-    // [SerializeField] private Transform bulletProjectilePrefab;
-    // [SerializeField] private Transform shootPointTransform;
-    private Transform bulletProjectilePrefab;
-    private Transform shootPointTransform;
     [SerializeField] Transform rifleTransform;
     [SerializeField] Transform meleeWeaponTransform;
 
-    Unit unit;
+    private Unit unit;
+    private Transform bulletProjectilePrefab;
+    private Transform shootPointTransform;
 
     private void Awake()
     {
@@ -42,6 +38,18 @@ public class UnitAnimator : MonoBehaviour
             meleeAction.OnMeleeActionCompleted += meleeAction_OnMeleeActionCompleted;
         }
 
+        GrenadeAction grenadeAction = GetComponentInChildren<GrenadeAction>();
+        if (grenadeAction != null)
+        {
+            grenadeAction.OnThrowGrenade += grenadeAction_OnThrowGrenade;
+        }
+
+        OverwatchAction overwatchAction = GetComponentInChildren<OverwatchAction>();
+        if (overwatchAction != null)
+        {
+            overwatchAction.OnShoot += overwatchAction_OnShoot;
+        }
+
         unit = GetComponent<Unit>();
         unit.OnCoverStateChanged += unit_OnCoverStateChanged;
     }
@@ -51,7 +59,7 @@ public class UnitAnimator : MonoBehaviour
         EquipRife();
     }
 
-    private void meleeAction_OnMeleeActionStarted(object sender, EventArgs e)
+    private void meleeAction_OnMeleeActionStarted(object sender, EventArgs e) // can pass in hit/miss and if miss, make target play dodge, if hit make target play hit animaiton
     {
         EquipMeleeWeapon();
         animator.SetTrigger("melee");
@@ -96,6 +104,43 @@ public class UnitAnimator : MonoBehaviour
             animator.SetBool("inCover", true);
         }
         
+    }
+
+    private void grenadeAction_OnThrowGrenade(object sender, EventArgs e)
+    {
+        //animator.SetTrigger("grenade");
+        //will first instaniate it in hand position
+    }
+
+    private void overwatchAction_OnShoot(object sender, OverwatchAction.OnShootEventArgs e)
+    {
+        animator.SetTrigger("shoot");
+
+        Transform bulletProjectileTransform = Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
+        BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
+
+        Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
+        targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
+        bulletProjectile.SetUp(targetUnitShootAtPosition);
+
+        // Vector3 unitShootPosition = e.shotUnit.GetPosition();
+        // unitShootPosition.y = shootPoint.position.y;
+
+        // if (!e.hit)
+        // {
+        //     // MISS!
+        //     Vector3 missShootPosition = unitShootPosition;
+        //     Vector3 dirToMissShootPosition = (missShootPosition - shootPoint.position).normalized;
+        //     Vector3 missDir = Vector3.Cross(dirToMissShootPosition, Vector3.down);
+
+        //     missShootPosition += missDir * .25f;
+        //     dirToMissShootPosition = (missShootPosition - shootPoint.position).normalized;
+
+        //     unitShootPosition = missShootPosition + dirToMissShootPosition * 40f;
+        // }
+
+        // Instantiate(pfBulletProjectileRaycast, shootPoint.position, Quaternion.identity).GetComponent<BulletProjectileRaycast>()
+        //     .Setup(unitShootPosition);
     }
 
    private void EquipMeleeWeapon()

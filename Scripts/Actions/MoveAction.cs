@@ -110,7 +110,7 @@ public class MoveAction : BaseAction
                     continue; // Path length is too long
 
                 validGridPositionList.Add(testGridPosition);
-            }
+            } 
         }
 
         return validGridPositionList;
@@ -134,6 +134,6 @@ public class MoveAction : BaseAction
         {
             gridPosition = gridPosition,
             actionValue = targetCountAtGridPosition * 10,
-        };
+        }; //add logic to seek enemy if out of range
     }
 }

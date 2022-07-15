@@ -8,7 +8,12 @@ public class LevelGrid : MonoBehaviour
 
     public static LevelGrid Instance { get; private set; }
 
-    public event EventHandler OnAnyUnitMoveGridPosition;
+    public event EventHandler<OnAnyUnitMoveGridPositionEventArgs> OnAnyUnitMoveGridPosition;
+
+    public class OnAnyUnitMoveGridPositionEventArgs : EventArgs
+    {
+        public Unit movedUnit;
+    }
 
     [SerializeField] private Transform gridDebugObjectPrefab;
 
@@ -95,7 +100,7 @@ public class LevelGrid : MonoBehaviour
         RemoveUnitAtGridPosition(fromGridPosition, unit);
         AddUnitAtGridPosition(toGridPosition, unit);
 
-        OnAnyUnitMoveGridPosition?.Invoke(this, EventArgs.Empty);
+        OnAnyUnitMoveGridPosition?.Invoke(this, new OnAnyUnitMoveGridPositionEventArgs {movedUnit = unit }); // could add unit = unit here and change the sigiture at the top to pass in what unit is moving?
     }
 
     public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);

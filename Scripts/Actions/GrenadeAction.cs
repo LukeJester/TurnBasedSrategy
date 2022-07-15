@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class GrenadeAction : BaseAction
 {
+
+    public event EventHandler OnThrowGrenade;
+
     [SerializeField] private Transform grenadeProjectilePrefab;
 
     private int maxThrowDistance = 5;
@@ -55,8 +58,13 @@ public class GrenadeAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
+        //will first instaniate it in hand position with grenade consumable / all consumables will be spawned in right hand
         Transform greandeProjectileTransform =  Instantiate(grenadeProjectilePrefab, unit.GetWorldPosition(), Quaternion.identity);
+        // will throw grenade after short delay so it goes in mid throw animation
         GrenadeProjectile grenadeProjectile = greandeProjectileTransform.GetComponent<GrenadeProjectile>();
+
+        OnThrowGrenade?.Invoke(this, EventArgs.Empty); // not used, but will be when we add throwing greande animation
+
         grenadeProjectile.Setup(gridPosition, OnGrenadeBehaviorComplete);
 
         ActionStart(onActionComplete);
