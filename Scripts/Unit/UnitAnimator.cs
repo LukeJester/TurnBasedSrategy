@@ -50,6 +50,12 @@ public class UnitAnimator : MonoBehaviour
             overwatchAction.OnShoot += overwatchAction_OnShoot;
         }
 
+        ReloadAction reloadAction = GetComponentInChildren<ReloadAction>();
+        if (reloadAction != null)
+        {
+            reloadAction.OnReload += reloadAction_OnReload;
+        }
+
         unit = GetComponent<Unit>();
         unit.OnCoverStateChanged += unit_OnCoverStateChanged;
     }
@@ -141,6 +147,11 @@ public class UnitAnimator : MonoBehaviour
 
         // Instantiate(pfBulletProjectileRaycast, shootPoint.position, Quaternion.identity).GetComponent<BulletProjectileRaycast>()
         //     .Setup(unitShootPosition);
+    }
+
+    private void reloadAction_OnReload(object sender, EventArgs e)
+    {
+        animator.SetTrigger("reload");
     }
 
    private void EquipMeleeWeapon()

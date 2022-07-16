@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class MeleeAction : BaseAction
 {
-
     public static event EventHandler OnAnyMelleHit;
 
     //for Melle Animations
@@ -18,11 +17,21 @@ public class MeleeAction : BaseAction
         SwingingWeaponAfterHit,
     }
 
-    private int maxMeleeDistance = 1; // range and damage will come from the weapon it is on
-    private int meleeDamage = 100;   // range and damage will come from the weapon it is on
+    [SerializeField] MeleeWeapon meleeWeapon;
+
+    private int maxMeleeDistance;
+    private int meleeDamage;
+    private int weaponAPCost;
     private State state;
     private float stateTimer;
     private Unit targetUnit;
+
+    private void Start()
+    {
+        maxMeleeDistance = meleeWeapon.GetWeaponRange();
+        meleeDamage = meleeWeapon.GetWeaponDamage();
+        weaponAPCost = meleeWeapon.GetAPCost();
+    }
 
     private void Update()
     {
@@ -74,11 +83,16 @@ public class MeleeAction : BaseAction
 
     public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
     {
-        return new EnemyAIAction 
+        return new EnemyAIAction // set to hit closest thing in range
         {
             gridPosition = gridPosition,
             actionValue = 200, // settting high means we will always use this is possible
         };
+    }
+
+    public override int GetActionPointsCost()
+    {
+        return weaponAPCost;
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()

@@ -44,11 +44,11 @@ public class LevelGrid : MonoBehaviour
     {
         Pathfinding.Instance.Setup(width, height, cellSize);
 
-        DestructableCrate.AfterAnyDestroyed += DestructableCrate_AfterAnyDestroyed;
-        DestructableCrate.OnAnyPlacment += DestructableCrate_OnAnyPlacment;
+        Cover.AfterAnyDestroyed += Cover_AfterAnyDestroyed;
+        Cover.OnAnyPlacment += Cover_OnAnyPlacment;
     }
 
-    public void UpdateCoverGridPositions(int width, int height, float cellSize)
+    public void UpdateCoverGridPositions(int width, int height, float cellSize) // change this to have overload for sending in array of grid positions to only uodate those
     {
         this.width = width;
         this.height = height;
@@ -77,13 +77,27 @@ public class LevelGrid : MonoBehaviour
         }
     }
 
+    public void UpdateCoverGridPositions(Cover cover , bool isDestroyed) 
+    {
+        GridPosition gridPosition = cover.GetGridPosition();
+
+        if (!isDestroyed)
+        {
+            gridSystem.GetGridObject(gridPosition).SetCoverType(cover.GetCoverType());
+        }
+        else
+        {
+            gridSystem.GetGridObject(gridPosition).SetCoverType(CoverType.None);
+        }
+    }
+
     public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         gridObject.AddUnit(unit);
     }
 
-    public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition)
+    public List<Unit> GetUnitListAtGridPosition(GridPosition gridPosition) // why is this here?
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         return gridObject.GetUnitList();
@@ -185,13 +199,21 @@ public class LevelGrid : MonoBehaviour
         return CoverType.None;
     }
 
-    private void DestructableCrate_AfterAnyDestroyed(object sender, EventArgs e)
+    private void Cover_AfterAnyDestroyed(object sender, EventArgs e)
     {
-        UpdateCoverGridPositions(this.width, this.height, this.cellSize);
+        Cover cover = sender as Cover;
+        bool isDestroyed = true;
+        UpdateCoverGridPositions(cover, isDestroyed);
+
+        //UpdateCoverGridPositions(this.width, this.height, this.cellSize);
     }
 
-    private void DestructableCrate_OnAnyPlacment(object sender, EventArgs e)
+    private void Cover_OnAnyPlacment(object sender, EventArgs e)
     {
-        UpdateCoverGridPositions(this.width, this.height, this.cellSize);
+        Cover cover = sender as Cover;
+        bool isDestroyed = false;
+        UpdateCoverGridPositions(cover, isDestroyed);
+
+        //UpdateCoverGridPositions(this.width, this.height, this.cellSize);
     }
 }

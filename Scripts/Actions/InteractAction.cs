@@ -49,7 +49,7 @@ public class InteractAction : BaseAction
                 if(interactable == null)
                     continue; //No interactable at this position
 
-                if(!interactable.CanInteract())
+                if(!interactable.CanInteract()) 
                     continue;  // cant interact with this object
 
                 validGridPositionList.Add(testGridPosition);

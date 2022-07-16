@@ -6,21 +6,43 @@ using UnityEngine.UI;
 
 public class Cover : MonoBehaviour
 {
+
+    public static event EventHandler AfterAnyDestroyed;
+    public static event EventHandler OnAnyPlacment;
+
     [SerializeField] CoverType coverType;
 
     [SerializeField] private Sprite fullCoverSprite;
     [SerializeField] private Sprite halfCoverSprite;
     [SerializeField] private SpriteRenderer[] spriteRendererArray;
 
+    // have Awake loop through the transforms to fill their corosponding SpriteRendererArrays
+    [SerializeField] private Transform northTransform;
+    [SerializeField] private Transform southTransform;
+    [SerializeField] private Transform eastTransform;
+    [SerializeField] private Transform westTransform;
+    private SpriteRenderer[] northSpriteRendererArray;
+    private SpriteRenderer[] eastSpriteRendererArray;
+    private SpriteRenderer[] southSpriteRendererArray;
+    private SpriteRenderer[] westSpriteRendererArray;
+
+    
     GridPosition thisGridPosition;
     GridPosition northGridPosition;
     GridPosition eastGridPosition;
     GridPosition sothGridPosition;
     GridPosition westGridPosition;
 
+    //Need to make the cover grid positons dynamic to different sizes of covor
+    GridPosition thisGridPositionAray;
+    GridPosition northGridPositionAray;
+    GridPosition eastGridPositionAray;
+    GridPosition sothGridPositionAray;
+    GridPosition westGridPositionAray;
+
     private bool mouseOverCover;
 
-    private void Awake()
+    private void Awake() // make this find all the renders in each directional spriteRendererArray by aranging the sprits in empty game gamgeOmcests
     {
         if (coverType == CoverType.Half)
         {
@@ -46,17 +68,19 @@ public class Cover : MonoBehaviour
             }
         }
 
-        //moved to Awake or race error
+        //moved to Awake due to race error
         Unit.OnAnyCoverStateChanged += unit_OnAnyCoverStateChanged;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
 
         thisGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
 
-        SetCoverGridPositions(thisGridPosition);
+        SetCoverGridPositions(thisGridPosition); 
     }
 
     private void Start()
     {
+        OnAnyPlacment?.Invoke(this, EventArgs.Empty);
+
         // Unit.OnAnyCoverStateChanged += unit_OnAnyCoverStateChanged;
         // Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
 
@@ -67,11 +91,13 @@ public class Cover : MonoBehaviour
 
     private void OnDestroy()
     {
+        AfterAnyDestroyed?.Invoke(this, EventArgs.Empty);
+
         Unit.OnAnyCoverStateChanged -= unit_OnAnyCoverStateChanged;
         Unit.OnAnyUnitDead -= Unit_OnAnyUnitDead;
     }
 
-    public void SetCoverGridPositions(GridPosition gridPosition)
+    public void SetCoverGridPositions(GridPosition gridPosition) // how to make this work for cover that takes uo mor that 1x1 grid position?
     {
         northGridPosition = new GridPosition(gridPosition.x + 0, gridPosition.z + 1);
         eastGridPosition = new GridPosition(gridPosition.x + 1, gridPosition.z + 0);
@@ -172,6 +198,12 @@ public class Cover : MonoBehaviour
             spriteRendererArray[3].enabled = false;
         }
     }
+
+    public GridPosition GetGridPosition()
+    {
+        return thisGridPosition;
+    }
+
 }
 
 public enum CoverType

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class DestructableCrate : MonoBehaviour, IDestructable
+public class DestructableCrate : MonoBehaviour, IDestructable // change name to obsticle
 {
 
     public static event EventHandler OnAnyDestroyed;
-    public static event EventHandler AfterAnyDestroyed;
     public static event EventHandler OnAnyPlacment;
 
     [SerializeField] Transform crateDestroyedPrefab;
+    [SerializeField] bool canBeDestroyed;
 
     private GridPosition gridPosition;
 
@@ -18,7 +18,7 @@ public class DestructableCrate : MonoBehaviour, IDestructable
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
 
-        OnAnyPlacment?.Invoke(this, EventArgs.Empty);
+        OnAnyPlacment?.Invoke(this, EventArgs.Empty); 
     }
 
     public GridPosition GetGridPosition()
@@ -26,8 +26,11 @@ public class DestructableCrate : MonoBehaviour, IDestructable
         return gridPosition;
     }
 
-    public void Destroy(Action OnInteractionComplete)
+    public void Destroy(Action OnInteractionComplete) // make check it this obsticle can be destroyed
     {
+        if (!canBeDestroyed)
+            return;
+
         Transform crateDestroyedTransform = Instantiate(crateDestroyedPrefab, transform.position, transform.rotation);
 
         ApplyExploasionToChildren(crateDestroyedTransform, 150f, transform.position, 10);
@@ -47,10 +50,5 @@ public class DestructableCrate : MonoBehaviour, IDestructable
 
             ApplyExploasionToChildren(child, exploasionForce, exploaionposition, exploaionRange);
         }
-    }
-
-    private void OnDestroy()
-    {
-        AfterAnyDestroyed?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -8,6 +8,7 @@ public abstract class BaseAction : MonoBehaviour
 
     public static event EventHandler OnAnyActionStart;
     public static event EventHandler OnAnyActionCompleted;
+    public static event EventHandler OnUpdateGridVisual;
 
     protected Unit unit;
     protected bool isActive;

@@ -45,6 +45,9 @@ public class ShootAction : BaseAction
     //Weapon Variables
     private int maxShootDistance;
     private int weaponDamage;
+    private int weaponAPCost = 1;
+    private int accuracy = 95;
+    private int currentAmmoInClip;
     private Transform bulletProjectilePrefab;
     private Transform shootPointTransform;
 
@@ -53,6 +56,8 @@ public class ShootAction : BaseAction
         base.Awake();
         maxShootDistance = rangedWeapon.GetWeaponRange();
         weaponDamage = rangedWeapon.GetWeaponDamage();
+        weaponAPCost = rangedWeapon.GetAPCost();
+        accuracy = rangedWeapon.GetAccuracy();
         bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
         shootPointTransform = rangedWeapon.GetShootPointTransform();
     }
@@ -91,6 +96,8 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
+        rangedWeapon.SubtractAmmoFromClip(1);
+        
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
         OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab  = bulletProjectilePrefab , shootPointTransform = shootPointTransform });
 
@@ -138,9 +145,7 @@ public class ShootAction : BaseAction
 
     public override int GetActionPointsCost()
     {
-        //return the AP of the wepon that this action is attached to/ might be in weapon script(mech weapon part)
-        //int  weaponAPCost =  this.gameObject.GetComponentInParent<MechWeaponPart>().GetWeaponActionPointCost();
-        return 1;
+        return weaponAPCost;
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
@@ -174,6 +179,9 @@ public class ShootAction : BaseAction
                 
                 if(targetUnit.IsEnemy() == unit.IsEnemy())
                     continue; //cant attack units on the same side 
+
+                if (!rangedWeapon.HasEnoughAmmoToShoot())
+                    continue;  // not enough ammo to shoot
 
                 Vector3 unitWorlPositon = LevelGrid.Instance.GetWorldPosition(UnitGridPosition);
                 Vector3 shoorDirection = (targetUnit.GetWorldPosition() - unitWorlPositon).normalized;
@@ -226,4 +234,6 @@ public class ShootAction : BaseAction
     {
         return GetValidActionGridPositionList(gridPosition).Count;
     }
+
+    
 }

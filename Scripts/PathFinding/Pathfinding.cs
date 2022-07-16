@@ -113,6 +113,19 @@ public class Pathfinding : MonoBehaviour
                     continue;
                 }
 
+                //test if enemy unit is at the position, then you cant walk throw them!
+                // only stops you from walking through enimes, not the other way around. Hope their IA dosent make this noticable
+                // this will become noticable when a melee only enamy priorotises the most engered and walks throw your tank to get to the ingered guy
+                if(LevelGrid.Instance.getUnitAtGridPosition(neighborNode.GetGridPosition()) != null)
+                {
+                    Unit unit = LevelGrid.Instance.getUnitAtGridPosition(neighborNode.GetGridPosition());
+                    if (unit.IsEnemy())
+                    {
+                        closedList.Add(neighborNode);
+                        continue;
+                    }
+                }
+
                 int tentativeGCost = currentNode.GetGCost() + calculateDisitance(currentNode.GetGridPosition(), neighborNode.GetGridPosition());
             
                 if(tentativeGCost < neighborNode.GetGCost())

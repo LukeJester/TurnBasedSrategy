@@ -5,7 +5,7 @@ using System;
 
 public class Unit : MonoBehaviour 
 {
-    private const int Action_Point_Max = 2;
+    private const int Action_Point_Max = 10;
 
     public static event EventHandler OnAnyActionPointsChanged;
     public static event EventHandler OnAnyUnitSpawned;
@@ -40,8 +40,8 @@ public class Unit : MonoBehaviour
 
         OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
 
-        DestructableCrate.AfterAnyDestroyed += DestructableCrate_AfterAnyDestroyed;
-        DestructableCrate.OnAnyPlacment += DestructableCrate_OnAnyPlacment;
+        Cover.AfterAnyDestroyed += Cover_AfterAnyDestroyed;
+        Cover.OnAnyPlacment += Cover_OnAnyPlacment;
 
         UpdateCoverType();
     }
@@ -178,11 +178,11 @@ public class Unit : MonoBehaviour
 
         OnAnyUnitDead?.Invoke(this, EventArgs.Empty);
 
-        DestructableCrate.AfterAnyDestroyed -= DestructableCrate_AfterAnyDestroyed;
-        DestructableCrate.OnAnyPlacment -= DestructableCrate_OnAnyPlacment;
+        Cover.AfterAnyDestroyed -= Cover_AfterAnyDestroyed;
+        Cover.OnAnyPlacment -= Cover_OnAnyPlacment;
     }
 
-    private void DestructableCrate_AfterAnyDestroyed(object sender, EventArgs e)
+    private void Cover_AfterAnyDestroyed(object sender, EventArgs e)
     {
         if (this == null)
             return;
@@ -190,7 +190,7 @@ public class Unit : MonoBehaviour
         UpdateCoverType();
     }
 
-    private void DestructableCrate_OnAnyPlacment(object sender, EventArgs e)
+    private void Cover_OnAnyPlacment(object sender, EventArgs e)
     {
         UpdateCoverType();
     }

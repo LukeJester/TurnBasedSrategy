@@ -485,6 +485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crateDestroyedPrefab: {fileID: 8745962277234083511, guid: 3566cb4b240d3e54ebda8811055b1ba9,
     type: 3}
+  canBeDestroyed: 0
 --- !u!114 &7513698531479830467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,3 +506,7 @@ MonoBehaviour:
   - {fileID: 6923525884478159318}
   - {fileID: 4048125460684096791}
   - {fileID: 8688004992162014364}
+  northTransform: {fileID: 0}
+  southTransform: {fileID: 0}
+  eastTransform: {fileID: 0}
+  westTransform: {fileID: 0}

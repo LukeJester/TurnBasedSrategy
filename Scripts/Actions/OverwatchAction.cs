@@ -127,7 +127,7 @@ public class OverwatchAction : BaseAction
     IEnumerator ShootTargetCoroutine()
     {
         Vector3 aimDirection = (movedUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-        float rotateSpeed = 10f;
+        float rotateSpeed = 2f;
         
         while (Vector3.Distance(unit.transform.forward, aimDirection) > .1)
         {
@@ -163,6 +163,9 @@ public class OverwatchAction : BaseAction
 
     public override List<GridPosition> GetValidActionGridPositionList()
     {
+        if (!rangedWeapon.HasEnoughAmmoToShoot())
+            return new List<GridPosition>();  // not enough ammo to shoot
+
         GridPosition unitGridPosition = unit.GetGridPosition();
 
         return new List<GridPosition>
