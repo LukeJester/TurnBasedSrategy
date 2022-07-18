@@ -127,6 +127,8 @@ public class LevelGrid : MonoBehaviour
 
     public int GetHeight() => gridSystem.GetHeight();
 
+    public float GetCellSize() => gridSystem.GetCellSize();
+
     public bool HasAnyUnitOnGridPosition(GridPosition gridPosition)
     {
         GridObject gridObject = gridSystem.GetGridObject(gridPosition);
@@ -197,6 +199,12 @@ public class LevelGrid : MonoBehaviour
         }
 
         return CoverType.None;
+    }
+
+    public Vector3 SnapWorldPosition(Vector3 worldPosition)
+    {
+        GridPosition gridPosition = GetGridPosition(worldPosition);
+        return GetWorldPosition(gridPosition);
     }
 
     private void Cover_AfterAnyDestroyed(object sender, EventArgs e)

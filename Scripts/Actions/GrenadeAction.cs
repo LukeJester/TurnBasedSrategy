@@ -9,8 +9,30 @@ public class GrenadeAction : BaseAction
     public event EventHandler OnThrowGrenade;
 
     [SerializeField] private Transform grenadeProjectilePrefab;
+    [SerializeField] private Transform grenadeProjectileRasiusPrefab;
+
+    private Transform grenadeRangeTransform;
+
+    GrenadeProjectile grenadeProjectile;
 
     private int maxThrowDistance = 5;
+
+    private void Start()
+    {
+        grenadeProjectile = grenadeProjectilePrefab.GetComponent<GrenadeProjectile>();
+
+        UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+    }
+
+
+
+    private void Update()
+    {
+        if (grenadeRangeTransform != null)
+        {
+            grenadeRangeTransform.position = LevelGrid.Instance.SnapWorldPosition(MouseWorld.instance.transform.position);
+        }
+    }
 
     public override string GetActionName()
     {
@@ -31,6 +53,7 @@ public class GrenadeAction : BaseAction
         List<GridPosition> validGridPositionList = new List<GridPosition>();
 
         GridPosition UnitGridPosition = unit.GetGridPosition();
+        //GridPosition grenadeGridPosition = MouseWorld.instance.GetMousesCurentGridPosition();
 
         for (int x = -maxThrowDistance; x <= maxThrowDistance; x++)
         {
@@ -48,6 +71,8 @@ public class GrenadeAction : BaseAction
 
                 if (UnitGridPosition == testGridPosition)
                     continue; //already standing there
+
+                
 
                 validGridPositionList.Add(testGridPosition);
             }
@@ -70,8 +95,40 @@ public class GrenadeAction : BaseAction
         ActionStart(onActionComplete);
     }
 
+    // spawns range prefab for greande
+    // spans one for each unit on the fild, how to only spawn for this one?
+    private void UnitActionSystem_OnSelectedActionChanged(object sender, UnitActionSystem.OnSelectedAction e) 
+    {
+        if (grenadeRangeTransform != null)
+        {
+            Destroy(grenadeRangeTransform.gameObject);
+        }
+
+        if (e.unitAction.GetActionName() == "Grenade")
+        {
+            grenadeRangeTransform = Instantiate(grenadeProjectileRasiusPrefab, LevelGrid.Instance.SnapWorldPosition(MouseWorld.instance.transform.position), Quaternion.identity);
+            grenadeRangeTransform.localScale = Vector3.one * (GetGrenadeTileRange() * LevelGrid.Instance.GetCellSize() + 1.3f);
+        }
+    }
+
     private void OnGrenadeBehaviorComplete()
     {
         ActionComplete();
     }
+
+    public GrenadeProjectile GetGrenadeProjectile()
+    {
+        return grenadeProjectile;
+    } 
+
+    public int GetGrenadeTileRange()
+    {
+        return grenadeProjectile.GetExplosionRadiusInTiles();
+    }
+
+    public int GetExplosionRadius()
+    {
+        return grenadeProjectile.GetExplosionRadius();
+    }
+
 }

@@ -52,6 +52,7 @@ public class GridSystemVisual : MonoBehaviour
         LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
         BaseAction.OnAnyActionCompleted += BaseAction_OnAnyActionCompleted;
+        //MouseWorld.OnMousesCurentGridPositionChange += MouseWorld_OnMousesCurentGridPositionChange;
 
         UpdateGridVisual();
     }
@@ -136,25 +137,34 @@ public class GridSystemVisual : MonoBehaviour
                 //could add walk range visual like in XCOM
                 // OR make each tile movment 1 AP and in the move action show full move range with currnet AP
                 break;
+
             case SpinAction spinAction:
                 gridVisualType = GridVisualType.Blue;
                 break;
+
             case ShootAction shootAction:
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                 break;
+
             case GrenadeAction grenadeAction: // would i add the explaoion grid effected area here?
                 gridVisualType = GridVisualType.RedSoft;
+
+                //Only shows the grid positions when the action is selected and only grid position are highlighted when not already redsoft, could fix with // code above
+                //ShowGridPositionRangeSquare(MouseWorld.instance.GetMousesCurentGridPosition(), grenadeAction.GetGrenadeProjectile().GetExplosionRadiusInTiles(), GridVisualType.Red);
                 break;
+
             case createCrateAction createCrateAction:
                 gridVisualType = GridVisualType.Yellow;
                 break;
+
             case MeleeAction meleeAction:
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), meleeAction.GetMaxMeleeDistance(), GridVisualType.RedSoft);
                 break;
+
             case InteractAction interactAction:
                 gridVisualType = GridVisualType.Blue;
                 break;
@@ -199,6 +209,12 @@ public class GridSystemVisual : MonoBehaviour
     {
         UpdateGridVisual();
     }
+
+    private void MouseWorld_OnMousesCurentGridPositionChange(object sender, EventArgs e)
+    {
+        UpdateGridVisual();
+    }
+
 
     private Material GetGridVisualTypeMaterial(GridVisualType  gridVisualType)
     {

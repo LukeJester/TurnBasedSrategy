@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class MouseWorld : MonoBehaviour
 {
-    private static MouseWorld instance;
+    public static MouseWorld instance;
+
+    public static event  EventHandler OnMousesCurentGridPositionChange;
+
+    GridPosition gridPosition;
+    GridPosition oldGridPosition;
 
     [SerializeField] private LayerMask mousePlaneLayerMask;
 
@@ -15,7 +21,17 @@ public class MouseWorld : MonoBehaviour
 
     private void Update()
     {
-        transform.position = MouseWorld.GetPosition(); 
+        transform.position = MouseWorld.GetPosition();
+
+        GetMousesCurentGridPosition();
+
+        if (gridPosition != oldGridPosition)
+        {
+            oldGridPosition = gridPosition;
+            OnMousesCurentGridPositionChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        //DrawWireSphere(Vector3 center, float radius);
     }
     
     public static Vector3 GetPosition()
@@ -23,6 +39,12 @@ public class MouseWorld : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(InputManager.Instance.GetMouseScreenPosition());
         Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, instance.mousePlaneLayerMask);
         return raycastHit.point;
+    }
+
+    public GridPosition GetMousesCurentGridPosition()
+    {
+        gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+        return gridPosition;
     }
 
     

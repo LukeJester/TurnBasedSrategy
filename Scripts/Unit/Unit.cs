@@ -170,6 +170,23 @@ public class Unit : MonoBehaviour
         healthSystem.Damage(damageAmount);
     }
 
+    public bool IsVisible()
+    {
+        return transform.Find("Character_Dummy_Female_01").gameObject.activeSelf;
+    }
+
+    public void HideVisual()
+    {
+        transform.Find("Character_Dummy_Female_01").gameObject.SetActive(false);
+        transform.Find("UnitWorldUI").gameObject.SetActive(false);
+    }
+
+    public void ShowVisual()
+    {
+        transform.Find("Character_Dummy_Female_01").gameObject.SetActive(true);
+        transform.Find("UnitWorldUI").gameObject.SetActive(true);
+    }
+
     private void healthSystem_OnDead(object sender, EventArgs e)
     {
         LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
