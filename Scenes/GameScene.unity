@@ -754,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 5.999997, z: -10}
+  m_FollowOffset: {x: 0, y: 12, z: -10}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -975,8 +975,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.2669335, y: -0.000000011296529, z: 0.0000000031289558, w: 0.96371496}
-  m_LocalPosition: {x: -5.143815, y: 9.968098, z: -5.3244}
+  m_LocalRotation: {x: 0.4241554, y: 0.000000011179073, z: -0.0000000052359965, w: 0.90558946}
+  m_LocalPosition: {x: -5.143815, y: 15.9681, z: -5.3244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5136,8 +5136,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541312434}
-  m_LocalRotation: {x: 0.2669335, y: -0.000000011296529, z: 0.0000000031289558, w: 0.96371496}
-  m_LocalPosition: {x: 1.88, y: 5.999997, z: -7.94}
+  m_LocalRotation: {x: 0.4241554, y: 0.000000011179073, z: -0.0000000052359965, w: 0.90558946}
+  m_LocalPosition: {x: 1.88, y: 12, z: -7.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5395,8 +5395,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1688478177}
-  - component: {fileID: 1688478178}
   - component: {fileID: 1688478179}
+  - component: {fileID: 1688478178}
   m_Layer: 0
   m_Name: FogOfWar
   m_TagString: Untagged
@@ -5445,6 +5445,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pfFogOfWarGridVisual: {fileID: 5666166383109980943, guid: f44d779741c626841af42290327ff8b7,
     type: 3}
+--- !u!1 &1746319613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4816916985203994375, guid: dbc9c4f11b9bfc94a954caec248b9415,
+    type: 3}
+  m_PrefabInstance: {fileID: 4825209769786153417}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1765704189
 GameObject:
   m_ObjectHideFlags: 0
@@ -6170,6 +6176,20 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4825209769786153417}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &16446597547319563
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746319613}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: b03bf55f951b3ff45b7ea8c12f63c67b, type: 3}
 --- !u!1001 &4803456083434708381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6249,6 +6269,11 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 822916055}
     m_Modifications:
+    - target: {fileID: 4796307253602725177, guid: dbc9c4f11b9bfc94a954caec248b9415,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4813495534709602497, guid: dbc9c4f11b9bfc94a954caec248b9415,
         type: 3}
       propertyPath: m_RootOrder
@@ -6262,7 +6287,7 @@ PrefabInstance:
     - target: {fileID: 4813495534709602497, guid: dbc9c4f11b9bfc94a954caec248b9415,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.087186
+      value: 4.61
       objectReference: {fileID: 0}
     - target: {fileID: 4813495534709602497, guid: dbc9c4f11b9bfc94a954caec248b9415,
         type: 3}

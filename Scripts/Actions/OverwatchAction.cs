@@ -16,6 +16,7 @@ public class OverwatchAction : BaseAction
         public Unit shootingUnit;
         public Transform bulletProjectilePrefab;
         public Transform shootPointTransform;
+        public bool hit;
     }
 
     //pass in target and if hit
@@ -34,12 +35,16 @@ public class OverwatchAction : BaseAction
     private int maxShootDistance;
     private int fullAccuracyMaximunShootDistance;
     private int fullAccuracyMinimumShootDistance;
+    private int accuracy;
     private int weaponDamage;
     private Transform bulletProjectilePrefab;
     private Transform shootPointTransform;
 
+    private float maxAccuracy = 100;
+
     private bool overwatchActive;
     private Unit movedUnit;
+    //private Unit targetUnit;
 
     public float slowDownFactor = 0.3f;
 
@@ -52,6 +57,7 @@ public class OverwatchAction : BaseAction
         maxShootDistance = rangedWeapon.GetWeaponMaxRange();
         fullAccuracyMaximunShootDistance = rangedWeapon.GetWeaponFullAccuracyMaximun();
         fullAccuracyMinimumShootDistance = rangedWeapon.GetWeaponFullAccuracyMinimum();
+        accuracy = rangedWeapon.GetAccuracy();
         weaponDamage = rangedWeapon.GetWeaponDamage();
         bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
         shootPointTransform = rangedWeapon.GetShootPointTransform();
@@ -83,7 +89,6 @@ public class OverwatchAction : BaseAction
                 //if (hit chance < 70%?)
                     //return;
                     
-                // It's an alive enemy and it's visible!
                 overwatchActive = false;
 
                 this.movedUnit = movedUnit;
@@ -122,6 +127,12 @@ public class OverwatchAction : BaseAction
 
     IEnumerator ShootTargetCoroutine()
     {
+        // Calc hit or miss
+        float randomRoll = UnityEngine.Random.Range(0, 1f);
+        bool hit = randomRoll < GetHitPercent(movedUnit);
+
+        rangedWeapon.SubtractAmmoFromClip(1);
+
         Vector3 aimDirection = (movedUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
         float rotateSpeed = 2f;
         
@@ -131,7 +142,7 @@ public class OverwatchAction : BaseAction
             yield return null;
         }
 
-        OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = movedUnit, shootingUnit = this.GetComponentInParent<Unit>(), bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
+        OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = movedUnit, shootingUnit = this.GetComponentInParent<Unit>(), bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform, hit = hit });
 
         Time.timeScale = 1f;
 
@@ -213,6 +224,59 @@ public class OverwatchAction : BaseAction
     private void OnOverwatchComplete()
     {
         ActionComplete();
+    }
+
+    private int GetShootDistance(GridPosition shootGridPosition)
+    {
+        GridPosition currentGridPosition = unit.GetGridPosition();
+        GridPosition shootVector = shootGridPosition - currentGridPosition;
+        int shootDistance = Mathf.Abs(shootVector.x) + Mathf.Abs(shootVector.z);
+        return shootDistance;
+    }
+
+    public bool IsWithinShootingDistance(GridPosition shootGridPosition)
+    {
+        return GetShootDistance(shootGridPosition) <= maxShootDistance;
+    }
+
+
+    public float GetHitPercent(Unit shootUnit)
+    {
+        if (IsWithinShootingDistance(shootUnit.GetGridPosition()))
+        {
+            // Within shoot range
+            float hitPercent = maxAccuracy;
+
+            int shootDistance = GetShootDistance(shootUnit.GetGridPosition());
+            int remainingShootDistance = Mathf.Max(0, shootDistance - fullAccuracyMaximunShootDistance);
+
+            if (shootDistance <= fullAccuracyMinimumShootDistance) // if to close
+            {
+                remainingShootDistance = Mathf.Max(0, fullAccuracyMinimumShootDistance - shootDistance);
+            }
+
+            hitPercent -= (100 - accuracy) * remainingShootDistance;
+
+            switch (shootUnit.GetCoverType())
+            {
+                case CoverType.Full:
+                    hitPercent -= 30f;
+                    break;
+                case CoverType.Half:
+                    hitPercent -= 10f;
+                    break;
+            }
+
+            hitPercent = Mathf.Max(0, hitPercent);
+
+            return hitPercent / 100;
+
+        }
+        else
+        {
+            // Not within shoot range
+            return 0f;
+        }
     }
 
 }

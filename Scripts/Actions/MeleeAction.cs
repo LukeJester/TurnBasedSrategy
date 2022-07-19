@@ -10,6 +10,12 @@ public class MeleeAction : BaseAction
     //for Melle Animations
     public event EventHandler OnMeleeActionStarted;
     public event EventHandler OnMeleeActionCompleted;
+    public static event EventHandler<OnMeleeDodgeEventArgs> OnAnyMeleeDodge;
+
+    public class OnMeleeDodgeEventArgs : EventArgs
+    {
+        public Unit targetUnit;
+    }
 
     private enum State
     {
@@ -19,9 +25,16 @@ public class MeleeAction : BaseAction
 
     [SerializeField] MeleeWeapon meleeWeapon;
 
+    //Weapon Variables
     private int maxMeleeDistance;
     private int meleeDamage;
     private int weaponAPCost;
+    private int accuracy;
+
+    private float maxAccuracy = 100;
+
+    private bool hit;
+
     private State state;
     private float stateTimer;
     private Unit targetUnit;
@@ -31,6 +44,7 @@ public class MeleeAction : BaseAction
         maxMeleeDistance = meleeWeapon.GetWeaponRange();
         meleeDamage = meleeWeapon.GetWeaponDamage();
         weaponAPCost = meleeWeapon.GetAPCost();
+        accuracy = meleeWeapon.GetAccuracy();
     }
 
     private void Update()
@@ -62,11 +76,14 @@ public class MeleeAction : BaseAction
     {
         switch (state)
         {
-            case State.SwingingWeaponBeforeHit: 
+            case State.SwingingWeaponBeforeHit:
                 state = State.SwingingWeaponAfterHit;
                 float afterHitStateTime = 0.1f;
                 stateTimer = afterHitStateTime;
-                targetUnit.Damage(meleeDamage);
+                if (hit)
+                {
+                    targetUnit.Damage(meleeDamage);
+                }
                 OnAnyMelleHit?.Invoke(this, EventArgs.Empty);
                 break;
             case State.SwingingWeaponAfterHit:
@@ -78,7 +95,7 @@ public class MeleeAction : BaseAction
 
     public override string GetActionName()
     {
-        return "Swoard";
+        return "Melee";
     }
 
     public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
@@ -134,8 +151,65 @@ public class MeleeAction : BaseAction
         float beforeHitStateTime = 0.7f;
         stateTimer = beforeHitStateTime;
 
+        // Calc hit or miss
+        float randomRoll = UnityEngine.Random.Range(0, 1f);
+        hit = randomRoll < GetHitPercent(targetUnit);
+
+        Debug.Log("randomRoll was" + randomRoll);
+        Debug.Log("Hit chance was " + GetHitPercent(targetUnit));
+
+        if (!hit)
+        {
+            //calls the target unit animator on a miss to dodge, Might do this in all atack scripts for a miss
+            OnAnyMeleeDodge?.Invoke(this, new OnMeleeDodgeEventArgs { targetUnit = targetUnit });
+        }
+
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
         ActionStart(onActionComplete);
+    }
+
+    private int GetMeleeDistance(GridPosition shootGridPosition)
+    {
+        GridPosition currentGridPosition = unit.GetGridPosition();
+        GridPosition shootVector = shootGridPosition - currentGridPosition;
+        int shootDistance = Mathf.Abs(shootVector.x) + Mathf.Abs(shootVector.z);
+        return shootDistance;
+    }
+
+    public bool IsWithinShootingDistance(GridPosition shootGridPosition)
+    {
+        return GetMeleeDistance(shootGridPosition) <= maxMeleeDistance;
+    }
+
+
+    public float GetHitPercent(Unit shootUnit)
+    {
+        if (IsWithinShootingDistance(shootUnit.GetGridPosition()))
+        {
+            float hitPercent = maxAccuracy;
+
+            hitPercent -= (100 - accuracy) ;
+
+            switch (shootUnit.GetCoverType())
+            {
+                case CoverType.Full:
+                    hitPercent -= 30f;
+                    break;
+                case CoverType.Half:
+                    hitPercent -= 10f;
+                    break;
+            }
+
+            hitPercent = Mathf.Max(0, hitPercent);
+
+            return hitPercent / 100;
+
+        }
+        else
+        {
+            // Not within shoot range
+            return 0f;
+        }
     }
 
     public int GetMaxMeleeDistance()

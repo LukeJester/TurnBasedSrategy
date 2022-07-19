@@ -109,9 +109,6 @@ public class ShootAction : BaseAction
         float randomRoll = UnityEngine.Random.Range(0, 1f);
         bool hit = randomRoll < GetHitPercent(targetUnit);
 
-        Debug.Log("randomRoll was" + randomRoll);
-        Debug.Log("Hit chance was " + GetHitPercent(targetUnit));
-
         rangedWeapon.SubtractAmmoFromClip(1);
         
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
@@ -159,7 +156,7 @@ public class ShootAction : BaseAction
         //return the name of the wepon that this action is attached to/ might be in weapon script(mech weapon part)
         string weaponName = this.gameObject.name;
         //string weaponName =  this.gameObject.GetComponentInParent<MechWeaponPart>().GetWeaponName();
-        return "Fire " + weaponName;
+        return "Shoot";
     }
 
     public override int GetActionPointsCost()

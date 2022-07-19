@@ -14,6 +14,8 @@ public class FogOfWarVisual : MonoBehaviour
     private int height;
     private MeshRenderer[,] gridVisualArray;
 
+    private bool startHappened = false;
+
     private void Awake()
     {
         Instance = this;
@@ -21,6 +23,11 @@ public class FogOfWarVisual : MonoBehaviour
 
     private void Start()
     {
+        if (startHappened)
+            return;
+        
+        startHappened = true;
+
         int width = LevelGrid.Instance.GetWidth();
         int height = LevelGrid.Instance.GetHeight();
 
@@ -56,6 +63,11 @@ public class FogOfWarVisual : MonoBehaviour
     {
         foreach (GridPosition gridPosition in gridPositionList)
         {
+            if (gridVisualArray ==null) // race error with the FogOfWar script
+            {
+                Start();
+            }
+
             MeshRenderer gridVisualMeshRenderer = gridVisualArray[gridPosition.x, gridPosition.z];
             gridVisualMeshRenderer.enabled = false;
         }

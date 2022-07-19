@@ -16,6 +16,7 @@ public class UnitActionSystem : MonoBehaviour
 
     public class OnSelectedAction : EventArgs
     {
+        public Unit unit;
         public BaseAction unitAction;
     }
 
@@ -128,7 +129,7 @@ public class UnitActionSystem : MonoBehaviour
     {
         selectedAction = baseAction;
 
-        OnSelectedActionChanged?.Invoke(this, new OnSelectedAction { unitAction = selectedAction });
+        OnSelectedActionChanged?.Invoke(this, new OnSelectedAction { unitAction = selectedAction, unit =  selectedUnit });
     }
 
     public Unit GetSelectedUnit()

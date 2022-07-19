@@ -8,6 +8,7 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] int maxRange = 1;
     [SerializeField] int weaponDamage = 100;
     [SerializeField] int APCost = 1;
+    [SerializeField] int accuracy = 95;
     // hit sound
     // hit effect
     //animation overide for different weapons
@@ -25,5 +26,10 @@ public class MeleeWeapon : MonoBehaviour
     public int GetAPCost()
     {
         return APCost;
+    }
+
+    public int GetAccuracy()
+    {
+        return accuracy;
     }
 }

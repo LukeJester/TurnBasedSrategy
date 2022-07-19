@@ -58,6 +58,8 @@ public class UnitAnimator : MonoBehaviour
 
         unit = GetComponent<Unit>();
         unit.OnCoverStateChanged += unit_OnCoverStateChanged;
+
+        MeleeAction.OnAnyMeleeDodge += meleeAction_OnAnyMeleeDodge;
     }
 
     private void Start()
@@ -74,6 +76,14 @@ public class UnitAnimator : MonoBehaviour
     private void meleeAction_OnMeleeActionCompleted(object sender, EventArgs e)
     {
         EquipRife();
+    }
+
+    private void meleeAction_OnAnyMeleeDodge(object sender, MeleeAction.OnMeleeDodgeEventArgs e)
+    {
+        if (e.targetUnit == unit) // if this unit is dodging an attack 
+        {
+            animator.SetTrigger("dodge");
+        }
     }
 
     private void MoveAction_OnStartMoving(object sender, EventArgs e)
@@ -140,31 +150,26 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.SetTrigger("shoot");
 
-        Transform bulletProjectileTransform = Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
-        BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
-
         Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
         targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
+
+        if (!e.hit)
+        {
+            // MISS!
+            Vector3 missShootPosition = targetUnitShootAtPosition;
+            Vector3 dirToMissShootPosition = (missShootPosition - e.shootPointTransform.transform.position).normalized;
+            Vector3 missDir = Vector3.Cross(dirToMissShootPosition, Vector3.down);
+
+            missShootPosition += missDir * .25f;
+            dirToMissShootPosition = (missShootPosition - e.shootPointTransform.transform.position).normalized;
+
+            targetUnitShootAtPosition = missShootPosition + dirToMissShootPosition * 40f;
+        }
+        
+        Transform bulletProjectileTransform = Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
+        BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
+ 
         bulletProjectile.SetUp(targetUnitShootAtPosition);
-
-        // Vector3 unitShootPosition = e.shotUnit.GetPosition();
-        // unitShootPosition.y = shootPoint.position.y;
-
-        // if (!e.hit)
-        // {
-        //     // MISS!
-        //     Vector3 missShootPosition = unitShootPosition;
-        //     Vector3 dirToMissShootPosition = (missShootPosition - shootPoint.position).normalized;
-        //     Vector3 missDir = Vector3.Cross(dirToMissShootPosition, Vector3.down);
-
-        //     missShootPosition += missDir * .25f;
-        //     dirToMissShootPosition = (missShootPosition - shootPoint.position).normalized;
-
-        //     unitShootPosition = missShootPosition + dirToMissShootPosition * 40f;
-        // }
-
-        // Instantiate(pfBulletProjectileRaycast, shootPoint.position, Quaternion.identity).GetComponent<BulletProjectileRaycast>()
-        //     .Setup(unitShootPosition);
     }
 
     private void reloadAction_OnReload(object sender, EventArgs e)
