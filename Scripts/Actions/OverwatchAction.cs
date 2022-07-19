@@ -32,6 +32,8 @@ public class OverwatchAction : BaseAction
 
     //Weapon Variables
     private int maxShootDistance;
+    private int fullAccuracyMaximunShootDistance;
+    private int fullAccuracyMinimumShootDistance;
     private int weaponDamage;
     private Transform bulletProjectilePrefab;
     private Transform shootPointTransform;
@@ -47,7 +49,9 @@ public class OverwatchAction : BaseAction
     protected override void Awake()
     {
         base.Awake();
-        maxShootDistance = rangedWeapon.GetWeaponRange() * 2;
+        maxShootDistance = rangedWeapon.GetWeaponMaxRange();
+        fullAccuracyMaximunShootDistance = rangedWeapon.GetWeaponFullAccuracyMaximun();
+        fullAccuracyMinimumShootDistance = rangedWeapon.GetWeaponFullAccuracyMinimum();
         weaponDamage = rangedWeapon.GetWeaponDamage();
         bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
         shootPointTransform = rangedWeapon.GetShootPointTransform();
@@ -63,17 +67,6 @@ public class OverwatchAction : BaseAction
     {
         if (!isActive) return;
         
-        // if(overwatchActive) return; // this wont let me end the action
-        // $(%$%($*)) i dont need to stal the complete, just make me turn
-
-        //  //  // check phone notes
-
-        // //how do I turn before shooting 
-        // Vector3 aimDirection = (movedUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-        // float rotateSpeed = 10f;
-        // unit.transform.forward = Vector3.Slerp(unit.transform.forward, aimDirection, rotateSpeed * Time.deltaTime);
-
-        // dont complete imidiatly, wail unil shoot is over, look how grenade does it?
         //could use animation event on the shoot animation
         ActionComplete();
     }
@@ -82,10 +75,13 @@ public class OverwatchAction : BaseAction
     {
         if (overwatchActive)
         {    
-            if (movedUnit.IsEnemy() && InLineOfSight(movedUnit))//if (!movedUnit.GetHealthSystem().IsDead() && movedUnit.IsEnemy() && movedUnit.IsVisible())
+            if (movedUnit.IsEnemy() && InLineOfSight(movedUnit))
             {
                 if (Vector3.Distance(movedUnit.GetWorldPosition(), unit.GetWorldPosition())> maxShootDistance)
                     return;
+
+                //if (hit chance < 70%?)
+                    //return;
                     
                 // It's an alive enemy and it's visible!
                 overwatchActive = false;
@@ -157,7 +153,7 @@ public class OverwatchAction : BaseAction
         return new EnemyAIAction
         {
             gridPosition = gridPosition,
-            actionValue =  100,
+            actionValue =  0,
         }; // if in safe spot(cover) with only 2 ap left then use, or what ever the ap cost is
     }
 
@@ -188,7 +184,7 @@ public class OverwatchAction : BaseAction
         Unit unit = this.GetComponentInParent<Unit>();
         int APRemaning= unit.GetActionPoints();
         
-        return APRemaning;
+        return Mathf.Max(APRemaning,1) ;
     }
 
     private void TurnSystem_OnTurnChange(object sender, EventArgs e)

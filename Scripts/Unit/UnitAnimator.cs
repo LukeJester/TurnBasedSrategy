@@ -91,11 +91,29 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.SetTrigger("shoot");
 
-        Transform bulletProjectileTransform =  Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
-        BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
-        
         Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
         targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
+
+        if (!e.hit)
+        {
+            // MISS!
+            Vector3 missShootPosition = targetUnitShootAtPosition;
+            Vector3 dirToMissShootPosition = (missShootPosition - e.shootPointTransform.transform.position).normalized;
+            Vector3 missDir = Vector3.Cross(dirToMissShootPosition, Vector3.down);
+
+            missShootPosition += missDir * .25f;
+            dirToMissShootPosition = (missShootPosition - e.shootPointTransform.transform.position).normalized;
+
+            targetUnitShootAtPosition = missShootPosition + dirToMissShootPosition * 40f;
+        }
+        
+        // Vector3 targetUnitShootAtPosition = e.targetUnit.GetWorldPosition();
+        // targetUnitShootAtPosition.y = e.shootPointTransform.position.y;
+ 
+        Transform bulletProjectileTransform = Instantiate(e.bulletProjectilePrefab, e.shootPointTransform.position, Quaternion.identity);
+        BulletProjectile bulletProjectile = bulletProjectileTransform.GetComponent<BulletProjectile>();
+
+        
         bulletProjectile.SetUp(targetUnitShootAtPosition);
     }
 

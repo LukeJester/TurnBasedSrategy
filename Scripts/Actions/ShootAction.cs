@@ -19,6 +19,7 @@ public class ShootAction : BaseAction
         public Unit shootingUnit;
         public Transform bulletProjectilePrefab;
         public Transform shootPointTransform;
+        public bool hit;
     }
 
     private enum State // for the camera change when shooting like in Mutant: year zero but in Wastland 3 it dosent
@@ -44,22 +45,30 @@ public class ShootAction : BaseAction
 
     //Weapon Variables
     private int maxShootDistance;
+    private int fullAccuracyMaximunShootDistance;
+    private int fullAccuracyMinimumShootDistance;
     private int weaponDamage;
-    private int weaponAPCost = 1;
-    private int accuracy = 95;
+    private int weaponAPCost;
+    private int accuracy;
     private int currentAmmoInClip;
+    private int critChance;
     private Transform bulletProjectilePrefab;
     private Transform shootPointTransform;
 
-    protected override void Awake()
+    private float maxAccuracy = 100;
+
+    protected override void Awake() // this might need to be moved to start for concistancy
     {
         base.Awake();
-        maxShootDistance = rangedWeapon.GetWeaponRange();
+        maxShootDistance = rangedWeapon.GetWeaponMaxRange();
+        fullAccuracyMaximunShootDistance = rangedWeapon.GetWeaponFullAccuracyMaximun();
+        fullAccuracyMinimumShootDistance = rangedWeapon.GetWeaponFullAccuracyMinimum();
         weaponDamage = rangedWeapon.GetWeaponDamage();
         weaponAPCost = rangedWeapon.GetAPCost();
         accuracy = rangedWeapon.GetAccuracy();
         bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
         shootPointTransform = rangedWeapon.GetShootPointTransform();
+        critChance = rangedWeapon.GetCritChance();
     }
 
     private void Update()
@@ -96,15 +105,25 @@ public class ShootAction : BaseAction
 
     private void Shoot()
     {
+        // Calc hit or miss
+        float randomRoll = UnityEngine.Random.Range(0, 1f);
+        bool hit = randomRoll < GetHitPercent(targetUnit);
+
+        Debug.Log("randomRoll was" + randomRoll);
+        Debug.Log("Hit chance was " + GetHitPercent(targetUnit));
+
         rangedWeapon.SubtractAmmoFromClip(1);
         
         OnAnyShoot?.Invoke(this, new OnShootEventArgs { targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
-        OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab  = bulletProjectilePrefab , shootPointTransform = shootPointTransform });
+        OnShoot?.Invoke(this, new OnShootEventArgs {targetUnit = targetUnit, shootingUnit = unit, bulletProjectilePrefab  = bulletProjectilePrefab , shootPointTransform = shootPointTransform, hit = hit });
 
         //Note for coppying code to make the Overcharged shot action
         //Some Actions can be placed on a weapon other that the base shoot
         //EX overload where targetUnit.Damage(weaponDamage * 2f); , cost extra AP, and damage weapon
-        targetUnit.Damage(weaponDamage);
+        if(hit)
+        {
+            targetUnit.Damage(weaponDamage);
+        }
     }
 
     private void NextState()
@@ -233,6 +252,59 @@ public class ShootAction : BaseAction
     public int GetTargetCountAtPosition(GridPosition gridPosition)
     {
         return GetValidActionGridPositionList(gridPosition).Count;
+    }
+
+    private int GetShootDistance(GridPosition shootGridPosition)
+    {
+        GridPosition currentGridPosition = unit.GetGridPosition();
+        GridPosition shootVector = shootGridPosition - currentGridPosition;
+        int shootDistance = Mathf.Abs(shootVector.x) + Mathf.Abs(shootVector.z);
+        return shootDistance;
+    }
+
+    public bool IsWithinShootingDistance(GridPosition shootGridPosition)
+    {
+        return GetShootDistance(shootGridPosition) <= maxShootDistance;
+    }
+
+
+    public float GetHitPercent(Unit shootUnit)
+    {
+        if (IsWithinShootingDistance(shootUnit.GetGridPosition()))
+        {
+            // Within shoot range
+            float hitPercent = maxAccuracy;
+
+            int shootDistance = GetShootDistance(shootUnit.GetGridPosition());
+            int remainingShootDistance = Mathf.Max(0, shootDistance - fullAccuracyMaximunShootDistance);
+
+            if (shootDistance <= fullAccuracyMinimumShootDistance) // if to close
+            {
+                remainingShootDistance = Mathf.Max(0, fullAccuracyMinimumShootDistance - shootDistance);
+            }
+
+            hitPercent -= (100 - accuracy) * remainingShootDistance;
+
+            switch (shootUnit.GetCoverType())
+            {
+                case CoverType.Full:
+                    hitPercent -= 30f;
+                    break;
+                case CoverType.Half:
+                    hitPercent -= 10f;
+                    break;
+            }
+
+            hitPercent = Mathf.Max(0, hitPercent);
+
+            return hitPercent/100;
+
+        }
+        else
+        {
+            // Not within shoot range
+            return 0f;
+        }
     }
 
     

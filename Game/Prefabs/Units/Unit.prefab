@@ -2757,6 +2757,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 0
+  UnitVisual: {fileID: 6878476770568811368}
+  UnitWorldUI: {fileID: 3498205414064388440}
 --- !u!114 &4591579283844562207
 MonoBehaviour:
   m_ObjectHideFlags: 0

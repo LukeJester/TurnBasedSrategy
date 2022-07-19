@@ -96,6 +96,8 @@ public class FogOfWar : MonoBehaviour
                     CoverType coverType = LevelGrid.Instance.GetCoverTypeAtPosition(targetPosition);
                     if (coverType == CoverType.Full) break; // If coverType is Full, Unit cannot see further through it
 
+                    if (coverType == CoverType.Environment) break; // If coverType is Wall, Unit cannot see further through it
+
                     if (!revealedGridPositionList.Contains(targetGridPosition))
                     {
                         // Position not yet tested

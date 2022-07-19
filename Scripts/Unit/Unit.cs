@@ -5,7 +5,7 @@ using System;
 
 public class Unit : MonoBehaviour 
 {
-    private const int Action_Point_Max = 10;
+    private const int Action_Point_Max = 20;
 
     public static event EventHandler OnAnyActionPointsChanged;
     public static event EventHandler OnAnyUnitSpawned;
@@ -14,6 +14,8 @@ public class Unit : MonoBehaviour
     public event EventHandler OnCoverStateChanged;
 
     [SerializeField] private bool isEnemy;
+    [SerializeField] private Transform UnitVisual;
+    [SerializeField] private Transform UnitWorldUI;
 
     private GridPosition gridPosition;
     private HealthSystem healthSystem;
@@ -172,19 +174,19 @@ public class Unit : MonoBehaviour
 
     public bool IsVisible()
     {
-        return transform.Find("Character_Dummy_Female_01").gameObject.activeSelf;
+        return UnitVisual.gameObject.activeSelf;
     }
 
     public void HideVisual()
     {
-        transform.Find("Character_Dummy_Female_01").gameObject.SetActive(false);
-        transform.Find("UnitWorldUI").gameObject.SetActive(false);
+        UnitVisual.gameObject.SetActive(false);
+        UnitWorldUI.gameObject.SetActive(false);
     }
 
     public void ShowVisual()
     {
-        transform.Find("Character_Dummy_Female_01").gameObject.SetActive(true);
-        transform.Find("UnitWorldUI").gameObject.SetActive(true);
+        UnitVisual.gameObject.SetActive(true);
+        UnitWorldUI.gameObject.SetActive(true);
     }
 
     private void healthSystem_OnDead(object sender, EventArgs e)

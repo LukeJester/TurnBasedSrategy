@@ -5,12 +5,15 @@ using UnityEngine;
 public class RangedWeapon : MonoBehaviour
 {
     // Weapon Stats
-    [SerializeField] int maxShootDistance = 4;
+    [SerializeField] int maxShootDistance = 10;
+    [SerializeField] int fullAccuracyMaximunShootDistance = 5;
+    [SerializeField] int fullAccuracyMinimumShootDistance = 2;
     [SerializeField] int weaponDamage = 50;
     [SerializeField] int APCost = 1;
     [SerializeField] int accuracy = 95;
     [SerializeField] int reloadAPCost = 1;
     [SerializeField] int maxAmmoPerClip = 5;
+    [SerializeField] int critChance = 5;
 
     //For SpawnedBullet
     [SerializeField] private Transform bulletProjectilePrefab;
@@ -33,9 +36,19 @@ public class RangedWeapon : MonoBehaviour
         return weaponDamage;
     }
 
-    public int GetWeaponRange()
+    public int GetWeaponMaxRange()
     {
         return maxShootDistance;
+    }
+
+    public int GetWeaponFullAccuracyMaximun()
+    {
+        return fullAccuracyMaximunShootDistance;
+    }
+
+    public int GetWeaponFullAccuracyMinimum()
+    {
+        return fullAccuracyMinimumShootDistance;
     }
 
     public Transform GetBulletProjectilePrefab()
@@ -61,6 +74,11 @@ public class RangedWeapon : MonoBehaviour
     public int GetAccuracy()
     {
         return accuracy;
+    }
+
+    public int GetCritChance()
+    {
+        return critChance;
     }
 
     public void SubtractAmmoFromClip(int ammoSpent) // need to check for negative ammo

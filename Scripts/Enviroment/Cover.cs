@@ -68,6 +68,9 @@ public class Cover : MonoBehaviour
             }
         }
 
+        if (coverType == CoverType.Environment)
+            return;
+
         //moved to Awake due to race error
         Unit.OnAnyCoverStateChanged += unit_OnAnyCoverStateChanged;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
@@ -79,6 +82,9 @@ public class Cover : MonoBehaviour
 
     private void Start()
     {
+        if (coverType == CoverType.Environment)
+            return;
+
         OnAnyPlacment?.Invoke(this, EventArgs.Empty);
 
         // Unit.OnAnyCoverStateChanged += unit_OnAnyCoverStateChanged;
@@ -108,6 +114,9 @@ public class Cover : MonoBehaviour
 
     private void UpdateShieldSprites()
     {
+        if (coverType == CoverType.Environment)
+            return;
+
         if (northGridPosition.z <= LevelGrid.Instance.GetHeight() && LevelGrid.Instance.HasAnyUnitOnGridPosition(northGridPosition))
             spriteRendererArray[0].enabled = true;
         else
@@ -170,6 +179,9 @@ public class Cover : MonoBehaviour
 
     public void HighlightPossibleShileds()
     {
+        if (coverType == CoverType.Environment)
+            return;
+
         if (northGridPosition.z <= LevelGrid.Instance.GetHeight() && Pathfinding.Instance.IsWalkableGridPosition(northGridPosition))
             spriteRendererArray[0].enabled = true;
         else
@@ -210,5 +222,6 @@ public enum CoverType
 {
     None,
     Half,
-    Full
+    Full,
+    Environment
 }
