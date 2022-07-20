@@ -68,10 +68,10 @@ public class Unit : MonoBehaviour
         newCoverType = LevelGrid.Instance.GetUnitCoverType(transform.position);
         coverDirectionList = LevelGrid.Instance.GetUnitCoverDirection(transform.position);
 
-        foreach (CoverDirection coverDir in coverDirectionList)
-        {
-            Debug.Log(coverDir);
-        }
+        // foreach (CoverDirection coverDir in coverDirectionList)
+        // {
+        //     Debug.Log(coverDir);
+        // }
 
         currentCoverType = newCoverType;
 
@@ -192,6 +192,8 @@ public class Unit : MonoBehaviour
         // default - 0
         //save l
         //UnitVisual.gameObject.layer = 9;
+        if (UnitVisual == null) // the OnDestroy function on destructable create is calling Fog Of War script which calls this when play ends
+            return;
         ChangeLayerOfChildren(UnitVisual, 9);
         UnitWorldUI.gameObject.layer = 9;
         // UnitVisual.gameObject.SetActive(false);
@@ -201,6 +203,8 @@ public class Unit : MonoBehaviour
     public void ShowVisual()
     {
         //UnitVisual.gameObject.layer = 7;
+        if (UnitVisual == null)
+            return;
         ChangeLayerOfChildren(UnitVisual, 7);
         UnitWorldUI.gameObject.layer = 7;
         // UnitVisual.gameObject.SetActive(true);

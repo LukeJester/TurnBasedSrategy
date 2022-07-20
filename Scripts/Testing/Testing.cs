@@ -14,7 +14,7 @@ public class Testing : MonoBehaviour
             // GridPosition startGridPosition = new GridPosition(0, 0);
 
             // List<GridPosition> gridPositionList = Pathfinding.Instance.FindPath(startGridPosition, mouseGridPosition);
-            
+
             // for (int i = 0; i < gridPositionList.Count - 1; i++)
             // {
             //     Debug.DrawLine(
@@ -24,6 +24,10 @@ public class Testing : MonoBehaviour
             //         10f
             //         );
             // }
+
+            //GridPosition targetPosition = new GridPosition(1 1);
+            Debug.Log(LevelGrid.Instance.GetCoverTypeAtPosition(MouseWorld.instance.transform.position));
+            
             
         }
     }

@@ -77,7 +77,12 @@ public class LevelGrid : MonoBehaviour
         }
     }
 
-    public void UpdateCoverGridPositions(Cover cover , bool isDestroyed) 
+    public void SetCoverTypeInLevelGrid(GridPosition gridPosition, CoverType coverType)
+    {
+        gridSystem.GetGridObject(gridPosition).SetCoverType(coverType);
+    }
+
+    public void UpdateCoverGridPositions(Cover cover , bool isDestroyed)  
     {
         GridPosition gridPosition = cover.GetGridPosition();
 

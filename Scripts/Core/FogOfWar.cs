@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FogOfWar : MonoBehaviour
+public class FogOfWar : MonoBehaviour  
 {
     public static FogOfWar Instance { get; private set; }
 
@@ -11,8 +11,11 @@ public class FogOfWar : MonoBehaviour
     {
         LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
         Cover.AfterAnyDestroyed += Cover_AfterAnyDestroyed;
+        Door.OnDoorOpenOrClose += Door_OnDoorOpenOrClose;
         UpdateAllFogOfWar();
     }
+
+    
 
     private void LevelGrid_OnAnyUnitMoveGridPosition(object sender, System.EventArgs e)
     {
@@ -20,6 +23,14 @@ public class FogOfWar : MonoBehaviour
     }
 
     private void Cover_AfterAnyDestroyed(object sender, EventArgs e)
+    {
+        if (this == null)
+            return;
+
+        UpdateAllFogOfWar();
+    }
+
+    private void Door_OnDoorOpenOrClose(object sender, EventArgs e)
     {
         UpdateAllFogOfWar();
     }
@@ -122,6 +133,8 @@ public class FogOfWar : MonoBehaviour
 
     private void OnDestroy()
     {
+        LevelGrid.Instance.OnAnyUnitMoveGridPosition -= LevelGrid_OnAnyUnitMoveGridPosition;
+
         Cover.AfterAnyDestroyed -= Cover_AfterAnyDestroyed;
     }
 }

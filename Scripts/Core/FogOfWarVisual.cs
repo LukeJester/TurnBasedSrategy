@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FogOfWarVisual : MonoBehaviour
+public class FogOfWarVisual : MonoBehaviour 
 {
     public static FogOfWarVisual Instance { get; private set; }
 

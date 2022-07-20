@@ -44,6 +44,12 @@ public class Cover : MonoBehaviour
 
     private void Awake() // make this find all the renders in each directional spriteRendererArray by aranging the sprits in empty game gamgeOmcests
     {
+        if (coverType == CoverType.Environment)
+            return;
+
+        if (spriteRendererArray == null) // if i forgot to fill the the sprite reneder on Environment
+            return;
+
         if (coverType == CoverType.Half)
         {
             foreach(SpriteRenderer spriteRenderer in spriteRendererArray)
@@ -68,9 +74,6 @@ public class Cover : MonoBehaviour
             }
         }
 
-        if (coverType == CoverType.Environment)
-            return;
-
         //moved to Awake due to race error
         Unit.OnAnyCoverStateChanged += unit_OnAnyCoverStateChanged;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
@@ -83,6 +86,9 @@ public class Cover : MonoBehaviour
     private void Start()
     {
         if (coverType == CoverType.Environment)
+            return;
+
+        if (spriteRendererArray == null) 
             return;
 
         OnAnyPlacment?.Invoke(this, EventArgs.Empty);
@@ -103,11 +109,6 @@ public class Cover : MonoBehaviour
         Unit.OnAnyUnitDead -= Unit_OnAnyUnitDead;
     }
 
-    // public void RemoveCoverFromLevelGrid()
-    // {
-    //     AfterAnyDestroyed?.Invoke(this, EventArgs.Empty);
-    // }
-
     public void SetCoverGridPositions(GridPosition gridPosition) // how to make this work for cover that takes uo mor that 1x1 grid position?
     {
         northGridPosition = new GridPosition(gridPosition.x + 0, gridPosition.z + 1);
@@ -120,6 +121,15 @@ public class Cover : MonoBehaviour
     private void UpdateShieldSprites()
     {
         if (coverType == CoverType.Environment)
+            return;
+
+        if (coverType == CoverType.None)
+            return;
+
+        if (spriteRendererArray == null)
+            return;
+
+        if (this == null)
             return;
 
         if (northGridPosition.z <= LevelGrid.Instance.GetHeight() && LevelGrid.Instance.HasAnyUnitOnGridPosition(northGridPosition))

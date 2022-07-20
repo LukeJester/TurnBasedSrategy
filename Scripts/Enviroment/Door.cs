@@ -6,6 +6,8 @@ using System;
 public class Door : MonoBehaviour, IInteractable
 {
 
+    public static event EventHandler OnDoorOpenOrClose;
+
     [SerializeField] private bool isOpen = false;
 
     private GridPosition gridPosition;
@@ -76,8 +78,11 @@ public class Door : MonoBehaviour, IInteractable
         boxCollider.enabled = false;
         animator.SetBool("isOpen", isOpen);
         Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, true);
-        //LevelGrid.Instance.UpdateCoverGridPositions(cover, true);
-        //cover.RemoveCoverFromLevelGrid();
+
+        //update the Fog of War
+        cover.SetCoverType(CoverType.None);
+        LevelGrid.Instance.SetCoverTypeInLevelGrid(gridPosition, cover.GetCoverType());
+        OnDoorOpenOrClose?.Invoke(this, EventArgs.Empty);
     }
 
     private void CloseDoor()
@@ -87,6 +92,10 @@ public class Door : MonoBehaviour, IInteractable
         animator.SetBool("isOpen", isOpen);
         Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, false);
 
+        //update the Fog of War
+        cover.SetCoverType(CoverType.Environment);
+        LevelGrid.Instance.SetCoverTypeInLevelGrid(gridPosition, cover.GetCoverType());
+        OnDoorOpenOrClose?.Invoke(this, EventArgs.Empty);
     }
 
     public bool CanInteract()
