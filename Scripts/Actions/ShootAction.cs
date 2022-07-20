@@ -249,6 +249,11 @@ public class ShootAction : BaseAction
         };
     }
 
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Attack;
+    }
+
     public int GetTargetCountAtPosition(GridPosition gridPosition)
     {
         return GetValidActionGridPositionList(gridPosition).Count;
@@ -297,6 +302,8 @@ public class ShootAction : BaseAction
                         break;
                 }
             }
+
+            // Take into account elivation, +10% chance to hit
             
             hitPercent = Mathf.Max(0, hitPercent);
 

@@ -71,6 +71,11 @@ public class ReloadAction : BaseAction
         ActionStart(onActionComplete);
     }
 
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Relaod;
+    }
+
     private void GetIfHasAmmoToShoot()
     {
         hasEnoughAmmoToShoot = rangedWeapon.HasEnoughAmmoToShoot();

@@ -128,13 +128,18 @@ public class MeleeAction : BaseAction
                 if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
                     continue;
 
-                if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition)) //this can be remove for a explosive attack like for a grenade 
+                if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
                     continue; // No enemy in grid position
+
+                if (UnitGridPosition == testGridPosition)
+                    continue;
 
                 Unit targetUnit = LevelGrid.Instance.getUnitAtGridPosition(testGridPosition);
 
-                if (targetUnit.IsEnemy() == unit.IsEnemy())
-                    continue; //cant attack units on the same side 
+                //currently cant heal other untis do to selecting them insted
+                // if (targetUnit.IsEnemy() == unit.IsEnemy())
+                //     continue; //cant attack units on the same side 
+                    
 
                 validGridPositionList.Add(testGridPosition);
             }
@@ -163,6 +168,11 @@ public class MeleeAction : BaseAction
 
         OnMeleeActionStarted?.Invoke(this, EventArgs.Empty);
         ActionStart(onActionComplete);
+    }
+
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Attack;
     }
 
     private int GetMeleeDistance(GridPosition shootGridPosition)

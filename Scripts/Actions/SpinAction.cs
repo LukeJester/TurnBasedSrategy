@@ -59,4 +59,9 @@ public class SpinAction : BaseAction
             actionValue = 0,
         };
     }
+
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Abilities;
+    }
 }

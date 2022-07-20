@@ -12,6 +12,7 @@ public abstract class BaseAction : MonoBehaviour
 
     protected Unit unit;
     protected bool isActive;
+    protected bool isActionAvailable;
     protected Action onActionComplete;
 
     protected virtual void Awake() 
@@ -83,4 +84,25 @@ public abstract class BaseAction : MonoBehaviour
     }
 
     public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
+
+    public abstract ActionGroup GetActionGroup();
 }
+
+public enum ActionGroup
+{
+    Movment,
+    Attack,
+    Relaod,
+    Abilities,
+    Item,
+    FinalAction
+}
+//Movment
+//walking/ regular movment
+//running gives extra movement per action but give a level of tired which lowers accuracy / lowers your dodge (easier to hit) untill your next turn
+//jet pack could have the unit move to higher ground like on a roof
+
+// Final Action options are 
+// Ambush/Overwatch: Set up an attack that will trigger on the enemy's next turn. Uses all remaining AP, gaining +5% Hit Chance per extra AP spent.
+// Defend/HunkerDown: Usable in combat.Hunker down and protect yourself from an attack. Use all remaining AP, gaining +5% Evasion for each spent.
+// Prepare/Rest: Usable in combat.End your turn, and carry over up to 2 unused AP to your next turn.

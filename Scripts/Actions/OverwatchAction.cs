@@ -198,6 +198,11 @@ public class OverwatchAction : BaseAction
         return Mathf.Max(APRemaning,1) ;
     }
 
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.FinalAction;
+    }
+
     private void TurnSystem_OnTurnChange(object sender, EventArgs e)
     {
         if (TurnSystem.Instance.IsPlayerTurn())

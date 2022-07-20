@@ -95,6 +95,11 @@ public class GrenadeAction : BaseAction
         ActionStart(onActionComplete);
     }
 
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Item;
+    }
+
     // spawns range prefab for greande
     // spans one for each unit on the fild, how to only spawn for this one?
     private void UnitActionSystem_OnSelectedActionChanged(object sender, UnitActionSystem.OnSelectedAction e) 

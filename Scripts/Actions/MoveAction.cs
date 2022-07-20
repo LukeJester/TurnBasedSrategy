@@ -136,4 +136,9 @@ public class MoveAction : BaseAction
             actionValue = targetCountAtGridPosition * 10,
         }; //add logic to seek enemy if out of range
     }
+
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Movment;
+    }
 }

@@ -66,6 +66,11 @@ public class InteractAction : BaseAction
         ActionStart(onActionComplete);
     }
 
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Abilities;
+    }
+
     private void OnInteractComplete()
     {
         ActionComplete();

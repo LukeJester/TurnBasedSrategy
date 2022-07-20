@@ -277,6 +277,7 @@ GameObject:
   - component: {fileID: 9048410595553005165}
   - component: {fileID: 4559254497327803167}
   - component: {fileID: 2655773826509160435}
+  - component: {fileID: 1108324422991862251}
   m_Layer: 7
   m_Name: StanderedActions
   m_TagString: Untagged
@@ -343,6 +344,19 @@ MonoBehaviour:
     type: 3}
   grenadeProjectileRasiusPrefab: {fileID: 7337947327766652889, guid: af9d8cf8adba8e748a36f78b31909bd7,
     type: 3}
+--- !u!114 &1108324422991862251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129275962544800689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b84bd27395b1f4ab6801772d58905f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healingVFX: {fileID: 4007389156555894, guid: da7875cab77480d49972b42ca872af40, type: 3}
 --- !u!1 &5467733426252857680
 GameObject:
   m_ObjectHideFlags: 0

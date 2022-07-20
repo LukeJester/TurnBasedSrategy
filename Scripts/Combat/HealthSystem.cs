@@ -34,6 +34,18 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
+    public void Heal(int healAmount)
+    {
+        health += healAmount;
+
+        if (health > 0)
+        {
+            health = healthMax;
+        }
+
+        OnDamaged?.Invoke(this, EventArgs.Empty);
+    }
+
     private void Die()
     {
         OnDead?.Invoke(this, EventArgs.Empty);

@@ -76,7 +76,12 @@ public class createCrateAction : BaseAction
         ActionStart(onActionComplete);
     }
 
-    private void OnCreatPlacment()
+    public override ActionGroup GetActionGroup()
+    {
+        return ActionGroup.Item;
+    }
+
+    private void OnCreatPlacment() // use this ot wait until cover set doen animation is done
     {
         ActionComplete();
     }

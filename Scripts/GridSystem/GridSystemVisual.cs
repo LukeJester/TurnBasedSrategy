@@ -172,6 +172,10 @@ public class GridSystemVisual : MonoBehaviour
             case InteractAction interactAction:
                 gridVisualType = GridVisualType.Blue;
                 break;
+
+            case HealAction healAction:
+                gridVisualType = GridVisualType.Green;
+                break;
         }
 
         ShowGridPositionList(selectedAction.GetValidActionGridPositionList(), gridVisualType);
