@@ -15,11 +15,13 @@ public class Door : MonoBehaviour, IInteractable
     private bool isActive;
     private BoxCollider boxCollider;
     private bool canInteract = true;
+    private Cover cover;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider>();
+        cover = GetComponent<Cover>();
     }
 
     private void Start()
@@ -74,6 +76,8 @@ public class Door : MonoBehaviour, IInteractable
         boxCollider.enabled = false;
         animator.SetBool("isOpen", isOpen);
         Pathfinding.Instance.SetIsWalkableGridPosition(gridPosition, true);
+        //LevelGrid.Instance.UpdateCoverGridPositions(cover, true);
+        //cover.RemoveCoverFromLevelGrid();
     }
 
     private void CloseDoor()

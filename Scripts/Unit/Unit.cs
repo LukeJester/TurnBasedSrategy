@@ -23,6 +23,7 @@ public class Unit : MonoBehaviour
     private int actionPoints = Action_Point_Max;
     private CoverType currentCoverType;
     private CoverType newCoverType;
+    private List<CoverDirection> coverDirectionList;
     
 
     private void Awake()
@@ -35,6 +36,7 @@ public class Unit : MonoBehaviour
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
+        LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
 
         TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
 
@@ -58,21 +60,20 @@ public class Unit : MonoBehaviour
             gridPosition = newGridPosition;
 
             LevelGrid.Instance.UnitMoveGridPosititon(this, oldGrisPosition, newGridPosition);
-
-            UpdateCoverType(); // could move this to the completion of the move action
         }
     }
 
-    private void UpdateCoverType() 
+    private void UpdateCoverType() // wont let you go to new cover if the same type one grid away
     {
         newCoverType = LevelGrid.Instance.GetUnitCoverType(transform.position);
+        coverDirectionList = LevelGrid.Instance.GetUnitCoverDirection(transform.position);
 
-        if (newCoverType == currentCoverType)
-            return;
+        foreach (CoverDirection coverDir in coverDirectionList)
+        {
+            Debug.Log(coverDir);
+        }
 
         currentCoverType = newCoverType;
-
-        //Debug.Log(currentCoverType);
 
         OnCoverStateChanged?.Invoke(this, EventArgs.Empty);
         OnAnyCoverStateChanged?.Invoke(this, EventArgs.Empty);
@@ -81,6 +82,11 @@ public class Unit : MonoBehaviour
     public CoverType GetCoverType()
     {
         return currentCoverType;
+    }
+
+    public List<CoverDirection> GetCoverDirectionList()
+    {
+        return coverDirectionList;
     }
 
     public T GetAction<T>() where T : BaseAction
@@ -174,19 +180,57 @@ public class Unit : MonoBehaviour
 
     public bool IsVisible()
     {
-        return UnitVisual.gameObject.activeSelf;
+        //test if laer mask is invisable?
+        return UnitVisual.gameObject.layer == 9;
+        //return UnitVisual.gameObject.activeSelf;
     }
 
     public void HideVisual()
     {
-        UnitVisual.gameObject.SetActive(false);
-        UnitWorldUI.gameObject.SetActive(false);
+        // Invisible - 9
+        // unit - 7
+        // default - 0
+        //save l
+        //UnitVisual.gameObject.layer = 9;
+        ChangeLayerOfChildren(UnitVisual, 9);
+        UnitWorldUI.gameObject.layer = 9;
+        // UnitVisual.gameObject.SetActive(false);
+        // UnitWorldUI.gameObject.SetActive(false);
     }
 
     public void ShowVisual()
     {
-        UnitVisual.gameObject.SetActive(true);
-        UnitWorldUI.gameObject.SetActive(true);
+        //UnitVisual.gameObject.layer = 7;
+        ChangeLayerOfChildren(UnitVisual, 7);
+        UnitWorldUI.gameObject.layer = 7;
+        // UnitVisual.gameObject.SetActive(true);
+        // UnitWorldUI.gameObject.SetActive(true);
+    }
+
+    private void ChangeLayerOfChildren(Transform root, int layerMask)
+    {
+        foreach (Transform child in root)
+        {
+            if (child.TryGetComponent<Transform>(out Transform childTransform))
+            {
+                childTransform.gameObject.layer = layerMask;
+            }
+            
+            ChangeLayerOfChildren(child, layerMask);
+        }
+    }
+
+    private void ApplyExploasionToChildren(Transform root, float exploasionForce, Vector3 exploaionposition, float exploaionRange)
+    {
+        foreach (Transform child in root)
+        {
+            if (child.TryGetComponent<Rigidbody>(out Rigidbody childRigidbody))
+            {
+                childRigidbody.AddExplosionForce(exploasionForce, exploaionposition, exploaionRange);
+            }
+
+            ApplyExploasionToChildren(child, exploasionForce, exploaionposition, exploaionRange);
+        }
     }
 
     private void healthSystem_OnDead(object sender, EventArgs e)
@@ -212,6 +256,12 @@ public class Unit : MonoBehaviour
     private void Cover_OnAnyPlacment(object sender, EventArgs e)
     {
         UpdateCoverType();
+    }
+
+    private void LevelGrid_OnAnyUnitMoveGridPosition(object sender, LevelGrid.OnAnyUnitMoveGridPositionEventArgs e)
+    {
+        if (e.movedUnit == this)
+            UpdateCoverType();
     }
 
     public float GetHealthNormilized()

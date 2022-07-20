@@ -41,6 +41,7 @@ public class ShootAction : BaseAction
     private State state;
     private float stateTimer;
     private Unit targetUnit;
+    private Unit shootingUnit;
     private bool canShootBullet;
 
     //Weapon Variables
@@ -69,6 +70,8 @@ public class ShootAction : BaseAction
         bulletProjectilePrefab = rangedWeapon.GetBulletProjectilePrefab();
         shootPointTransform = rangedWeapon.GetShootPointTransform();
         critChance = rangedWeapon.GetCritChance();
+
+        shootingUnit = GetComponentInParent<Unit>();
     }
 
     private void Update()
@@ -265,14 +268,14 @@ public class ShootAction : BaseAction
     }
 
 
-    public float GetHitPercent(Unit shootUnit)
+    public float GetHitPercent(Unit targetUnit)
     {
-        if (IsWithinShootingDistance(shootUnit.GetGridPosition()))
+        if (IsWithinShootingDistance(targetUnit.GetGridPosition()))
         {
             // Within shoot range
             float hitPercent = maxAccuracy;
 
-            int shootDistance = GetShootDistance(shootUnit.GetGridPosition());
+            int shootDistance = GetShootDistance(targetUnit.GetGridPosition());
             int remainingShootDistance = Mathf.Max(0, shootDistance - fullAccuracyMaximunShootDistance);
 
             if (shootDistance <= fullAccuracyMinimumShootDistance) // if to close
@@ -282,16 +285,19 @@ public class ShootAction : BaseAction
 
             hitPercent -= (100 - accuracy) * remainingShootDistance;
 
-            switch (shootUnit.GetCoverType())
+            if (IsTargetUnitInCoverComparedtoThisUnitsPosition(targetUnit))
             {
-                case CoverType.Full:
-                    hitPercent -= 30f;
-                    break;
-                case CoverType.Half:
-                    hitPercent -= 10f;
-                    break;
+                switch (targetUnit.GetCoverType())
+                {
+                    case CoverType.Full:
+                        hitPercent -= 30f;
+                        break;
+                    case CoverType.Half:
+                        hitPercent -= 10f;
+                        break;
+                }
             }
-
+            
             hitPercent = Mathf.Max(0, hitPercent);
 
             return hitPercent/100;
@@ -302,6 +308,28 @@ public class ShootAction : BaseAction
             // Not within shoot range
             return 0f;
         }
+    }
+
+    private bool IsTargetUnitInCoverComparedtoThisUnitsPosition(Unit targetUnit)
+    {
+        List<CoverDirection> coverDirectionList = new List<CoverDirection>();
+        coverDirectionList = targetUnit.GetCoverDirectionList();
+
+        if (coverDirectionList.Contains(CoverDirection.North))
+            if (shootingUnit.GetGridPosition().z > targetUnit.GetGridPosition().z)
+                return true;
+        if (coverDirectionList.Contains(CoverDirection.East))
+            if (shootingUnit.GetGridPosition().x > targetUnit.GetGridPosition().x)
+                return true;
+        if (coverDirectionList.Contains(CoverDirection.South))
+            if (shootingUnit.GetGridPosition().z < targetUnit.GetGridPosition().z)
+                return true;
+        if (coverDirectionList.Contains(CoverDirection.West))
+            if (shootingUnit.GetGridPosition().x < targetUnit.GetGridPosition().x)
+                return true;
+        
+
+        return false;
     }
 
     

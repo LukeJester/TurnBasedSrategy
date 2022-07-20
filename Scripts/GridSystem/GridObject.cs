@@ -81,4 +81,5 @@ public class GridObject
     {
         return coverType;
     }
+
 }

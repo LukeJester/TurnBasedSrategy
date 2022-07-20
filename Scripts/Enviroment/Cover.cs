@@ -103,6 +103,11 @@ public class Cover : MonoBehaviour
         Unit.OnAnyUnitDead -= Unit_OnAnyUnitDead;
     }
 
+    // public void RemoveCoverFromLevelGrid()
+    // {
+    //     AfterAnyDestroyed?.Invoke(this, EventArgs.Empty);
+    // }
+
     public void SetCoverGridPositions(GridPosition gridPosition) // how to make this work for cover that takes uo mor that 1x1 grid position?
     {
         northGridPosition = new GridPosition(gridPosition.x + 0, gridPosition.z + 1);
@@ -224,4 +229,12 @@ public enum CoverType
     Half,
     Full,
     Environment
+}
+
+public enum CoverDirection
+{
+    North,
+    East,
+    South,
+    West
 }

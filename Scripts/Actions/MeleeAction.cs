@@ -155,9 +155,6 @@ public class MeleeAction : BaseAction
         float randomRoll = UnityEngine.Random.Range(0, 1f);
         hit = randomRoll < GetHitPercent(targetUnit);
 
-        Debug.Log("randomRoll was" + randomRoll);
-        Debug.Log("Hit chance was " + GetHitPercent(targetUnit));
-
         if (!hit)
         {
             //calls the target unit animator on a miss to dodge, Might do this in all atack scripts for a miss

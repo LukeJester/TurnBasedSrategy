@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,10 +10,16 @@ public class FogOfWar : MonoBehaviour
     private void Start()
     {
         LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
+        Cover.AfterAnyDestroyed += Cover_AfterAnyDestroyed;
         UpdateAllFogOfWar();
     }
 
     private void LevelGrid_OnAnyUnitMoveGridPosition(object sender, System.EventArgs e)
+    {
+        UpdateAllFogOfWar();
+    }
+
+    private void Cover_AfterAnyDestroyed(object sender, EventArgs e)
     {
         UpdateAllFogOfWar();
     }
@@ -111,5 +118,10 @@ public class FogOfWar : MonoBehaviour
     public static Vector3 ApplyRotationToVectorXZ(Vector3 vec, float angle)
     {
         return Quaternion.Euler(0, angle, 0) * vec;
+    }
+
+    private void OnDestroy()
+    {
+        Cover.AfterAnyDestroyed -= Cover_AfterAnyDestroyed;
     }
 }

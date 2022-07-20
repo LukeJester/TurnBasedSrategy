@@ -208,6 +208,7 @@ GameObject:
   - component: {fileID: 4239626248892088937}
   - component: {fileID: 4239626248892088939}
   - component: {fileID: 5872269559534842289}
+  - component: {fileID: 3759219273722636069}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -230,7 +231,7 @@ Transform:
   - {fileID: 4235098366431273868}
   - {fileID: 4235098367555008011}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4239626248892088937
 MonoBehaviour:
@@ -278,3 +279,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.2151814, y: 3.423779, z: 1}
   m_Center: {x: -0.090530396, y: 1.2118895, z: 0}
+--- !u!114 &3759219273722636069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4239626248892088936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1ec67fcf2c80dd42a5591e3cae53f40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coverType: 3
+  fullCoverSprite: {fileID: 0}
+  halfCoverSprite: {fileID: 0}
+  spriteRendererArray: []
+  northTransform: {fileID: 0}
+  southTransform: {fileID: 0}
+  eastTransform: {fileID: 0}
+  westTransform: {fileID: 0}

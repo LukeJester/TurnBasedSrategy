@@ -201,6 +201,42 @@ public class LevelGrid : MonoBehaviour
         return CoverType.None;
     }
 
+    public List<CoverDirection> GetUnitCoverDirection(Vector3 worldPosition) // where I can add the is Wakable check
+    {
+        GridPosition gridPosition = gridSystem.GetGridPosition(worldPosition);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        List<CoverDirection> coverDirectionList = new List<CoverDirection>();
+
+        // Find closest cover to this position
+
+        bool hasLeft = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x - 1, gridPosition.z + 0));
+        bool hasRight = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 1, gridPosition.z + 0));
+        bool hasFront = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 0, gridPosition.z + 1));
+        bool hasBack = gridSystem.IsValidGridPosition(new GridPosition(gridPosition.x + 0, gridPosition.z - 1));
+
+        CoverType leftCover, rightCover, frontCover, backCover;
+        leftCover = rightCover = frontCover = backCover = CoverType.None;
+
+        if (hasLeft) leftCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x - 1, gridPosition.z + 0)).GetCoverType();
+        if (hasRight) rightCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 1, gridPosition.z + 0)).GetCoverType();
+        if (hasFront) frontCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 0, gridPosition.z + 1)).GetCoverType();
+        if (hasBack) backCover = gridSystem.GetGridObject(new GridPosition(gridPosition.x + 0, gridPosition.z - 1)).GetCoverType();
+
+        if (leftCover == CoverType.Full || leftCover == CoverType.Half)
+            coverDirectionList.Add(CoverDirection.West);
+
+        if (rightCover == CoverType.Full || rightCover == CoverType.Half)
+            coverDirectionList.Add(CoverDirection.East);
+
+        if (frontCover == CoverType.Full || frontCover == CoverType.Half)
+            coverDirectionList.Add(CoverDirection.North);
+
+        if (backCover == CoverType.Full || backCover == CoverType.Half)
+            coverDirectionList.Add(CoverDirection.South);
+
+        return coverDirectionList;
+    }
+
     public Vector3 SnapWorldPosition(Vector3 worldPosition)
     {
         GridPosition gridPosition = GetGridPosition(worldPosition);

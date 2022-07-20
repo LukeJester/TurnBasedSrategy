@@ -52,6 +52,7 @@ public class GridSystemVisual : MonoBehaviour
         LevelGrid.Instance.OnAnyUnitMoveGridPosition += LevelGrid_OnAnyUnitMoveGridPosition;
         Unit.OnAnyUnitDead += Unit_OnAnyUnitDead;
         BaseAction.OnAnyActionCompleted += BaseAction_OnAnyActionCompleted;
+        TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
         //MouseWorld.OnMousesCurentGridPositionChange += MouseWorld_OnMousesCurentGridPositionChange;
 
         UpdateGridVisual();
@@ -123,6 +124,9 @@ public class GridSystemVisual : MonoBehaviour
     private void UpdateGridVisual()
     {
         HideAllGridPositions();
+
+        if (!TurnSystem.Instance.IsPlayerTurn())
+            return;
 
         Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
         BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
@@ -213,6 +217,14 @@ public class GridSystemVisual : MonoBehaviour
     private void MouseWorld_OnMousesCurentGridPositionChange(object sender, EventArgs e)
     {
         UpdateGridVisual();
+    }
+
+    private void TurnSystem_OnTurnChange(object sender, EventArgs e)
+    {
+        if (!TurnSystem.Instance.IsPlayerTurn())
+        {
+            HideAllGridPositions();
+        }
     }
 
 
