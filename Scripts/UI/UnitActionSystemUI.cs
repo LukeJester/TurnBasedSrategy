@@ -4,18 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using System.Linq;
 
 public class UnitActionSystemUI : MonoBehaviour
 {
     [SerializeField] private Transform actionButtonPrefab;
     [SerializeField] private Transform actionButtionContainerTransfrom;
     [SerializeField] private TextMeshProUGUI actionPointsText;
+    [SerializeField] private Transform groupActionButtionContainerTransfrom;
+    [SerializeField] private Transform groupActionButtonPrefab;
+
 
     private List<ActionButtionUI> actionButtionUIList;
+    private List<GroupActionButtionUI> groupActionButtionUIList;
 
     private void Awake()
     {
         actionButtionUIList = new List<ActionButtionUI>();
+        groupActionButtionUIList = new List<GroupActionButtionUI>();
     }
 
     private void Start()
@@ -28,41 +34,95 @@ public class UnitActionSystemUI : MonoBehaviour
 
         UpdateActionPoints();
         CreatUnitActionButtons();
+
+        CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
         UpdateActionButtonVisualForEnemyTurn();
 
+        
+
         UnitActionSystem.Instance.OnBusyChanged += UnitActionSystem_OnBusyChanged;
+
+        GroupActionButtionUI.OnAnyActionGroupSelected += GroupActionButtionUI_OnAnyActionGroupSelected;
     }
 
     private void CreatUnitActionButtons()
     {
-        foreach(Transform buttonTransform in actionButtionContainerTransfrom)
+        // foreach(Transform buttonTransform in actionButtionContainerTransfrom)
+        // {
+        //     Destroy(buttonTransform.gameObject);
+        // }
+
+        // actionButtionUIList.Clear();
+
+        // Unit selectedUnit =  UnitActionSystem.Instance.GetSelectedUnit();
+
+        // if (selectedUnit == null)
+        //     return;
+            
+        // foreach(BaseAction baseAction in selectedUnit.GetBaseActionArray())
+        // {
+        //     Transform actionButtonTransform =  Instantiate(actionButtonPrefab, actionButtionContainerTransfrom);
+        //     ActionButtionUI actionButtionUI = actionButtonTransform.GetComponent<ActionButtionUI>();
+        //     actionButtionUI.SetBaseAction(baseAction);
+
+        //     actionButtionUIList.Add(actionButtionUI);
+        // }
+    }
+
+    private void CreatUnitGroupActionButtons()
+    {
+        foreach (Transform buttonTransform in groupActionButtionContainerTransfrom)
         {
             Destroy(buttonTransform.gameObject);
         }
 
-        actionButtionUIList.Clear();
+        groupActionButtionUIList.Clear();
 
-        Unit selectedUnit =  UnitActionSystem.Instance.GetSelectedUnit();
+        Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
 
         if (selectedUnit == null)
             return;
-            
-        foreach(BaseAction baseAction in selectedUnit.GetBaseActionArray())
-        {
-            Transform actionButtonTransform =  Instantiate(actionButtonPrefab, actionButtionContainerTransfrom);
-            ActionButtionUI actionButtionUI = actionButtonTransform.GetComponent<ActionButtionUI>();
-            actionButtionUI.SetBaseAction(baseAction);
 
-            actionButtionUIList.Add(actionButtionUI);
+        List<BaseAction> actionList = new List<BaseAction>();
+        List<ActionGroup> actionGroupList = new List<ActionGroup>();
+
+        foreach (BaseAction baseAction in selectedUnit.GetBaseActionArray())
+        {
+            actionList.Add(baseAction);
+            actionGroupList.Add(baseAction.GetActionGroup());
+        }
+
+        actionGroupList = actionGroupList.Distinct().ToList();
+
+        foreach (ActionGroup actionGroup in actionGroupList)
+        {
+            Transform groupActionButtonTransform = Instantiate(groupActionButtonPrefab, groupActionButtionContainerTransfrom);
+            GroupActionButtionUI groupActionButtionUI = groupActionButtonTransform.GetComponent<GroupActionButtionUI>();
+            groupActionButtionUI.SetBaseActionGroup(actionGroup);
+
+            foreach (BaseAction baseAction in selectedUnit.GetBaseActionArray())
+            {
+                if(baseAction.GetActionGroup() == actionGroup)
+                {
+                    groupActionButtionUI.AddToBaseActionList(baseAction);
+                }  
+            }
+
+            groupActionButtionUIList.Add(groupActionButtionUI);
+
         }
     }
 
     private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e)
     {
         CreatUnitActionButtons();
+
+        CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
         UpdateActionPoints();
+
+        
     }
 
     private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
@@ -77,20 +137,33 @@ public class UnitActionSystemUI : MonoBehaviour
 
     private void UpdateSelectedVisual()
     {
-        foreach(ActionButtionUI actionButtionUI in actionButtionUIList)
+        foreach(GroupActionButtionUI groupActionButtionUI in groupActionButtionUIList)
         {
-            actionButtionUI.UpdateSelectedVisual();
+            groupActionButtionUI.UpdateSelectedVisual();
+        }
+
+        // foreach(ActionButtionUI actionButtionUI in actionButtionUIList)
+        // {
+        //     actionButtionUI.UpdateSelectedVisual();
+        // }
+    }
+
+    public void UpdateSelectedGroupActionButton()
+    {
+        foreach (GroupActionButtionUI groupActionButtionUI in groupActionButtionUIList)
+        {
+            groupActionButtionUI.SetIsSelected();
         }
     }
 
     private void Show()
     {
-        actionButtionContainerTransfrom.gameObject.SetActive(true);
+        //groupActionButtionContainerTransfrom.gameObject.SetActive(true);
     }
 
     private void Hide()
     {
-        actionButtionContainerTransfrom.gameObject.SetActive(false);
+        //groupActionButtionContainerTransfrom.gameObject.SetActive(false);
     }
 
     private void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
@@ -122,9 +195,14 @@ public class UnitActionSystemUI : MonoBehaviour
         UpdateActionPoints();
     }
 
+    private void GroupActionButtionUI_OnAnyActionGroupSelected(object sender, EventArgs e)
+    {
+        UpdateSelectedGroupActionButton();
+    }
+
     private void UpdateActionButtonVisualForEnemyTurn()
     {
-        actionButtionContainerTransfrom.gameObject.SetActive(TurnSystem.Instance.IsPlayerTurn());
+        groupActionButtionContainerTransfrom.gameObject.SetActive(TurnSystem.Instance.IsPlayerTurn());
         actionPointsText.gameObject.SetActive(TurnSystem.Instance.IsPlayerTurn());
     }
 }

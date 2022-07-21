@@ -175,29 +175,29 @@ public class MeleeAction : BaseAction
         return ActionGroup.Attack;
     }
 
-    private int GetMeleeDistance(GridPosition shootGridPosition)
+    private int GetMeleeDistance(GridPosition targetGridPosition)
     {
         GridPosition currentGridPosition = unit.GetGridPosition();
-        GridPosition shootVector = shootGridPosition - currentGridPosition;
+        GridPosition shootVector = targetGridPosition - currentGridPosition;
         int shootDistance = Mathf.Abs(shootVector.x) + Mathf.Abs(shootVector.z);
         return shootDistance;
     }
 
-    public bool IsWithinShootingDistance(GridPosition shootGridPosition)
+    public bool IsWithinMeleeDistance(GridPosition targetGridPosition)
     {
-        return GetMeleeDistance(shootGridPosition) <= maxMeleeDistance;
+        return true; //GetMeleeDistance(targetGridPosition) <= maxMeleeDistance;
     }
 
 
-    public float GetHitPercent(Unit shootUnit)
+    public float GetHitPercent(Unit targetUnit)
     {
-        if (IsWithinShootingDistance(shootUnit.GetGridPosition()))
+        if (IsWithinMeleeDistance(targetUnit.GetGridPosition()))
         {
             float hitPercent = maxAccuracy;
 
             hitPercent -= (100 - accuracy) ;
 
-            switch (shootUnit.GetCoverType())
+            switch (targetUnit.GetCoverType())
             {
                 case CoverType.Full:
                     hitPercent -= 30f;
