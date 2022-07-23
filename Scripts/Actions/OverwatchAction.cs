@@ -85,31 +85,15 @@ public class OverwatchAction : BaseAction
             {
                 if (Vector3.Distance(movedUnit.GetWorldPosition(), unit.GetWorldPosition())> maxShootDistance)
                     return;
-
-                //if (hit chance < 70%?)
-                    //return;
                     
                 overwatchActive = false;
 
                 this.movedUnit = movedUnit;
 
-                // Calc hit or miss
-                bool hit = true;// UnityEngine.Random.Range(0, 1f) < GetHitPercent(targetUnit);
-
-                //OnShoot?.Invoke(this, new OnShootEventArgs { shotUnit = movedUnit, hit = hit });
                 Time.timeScale = slowDownFactor;
-                //Time.fixedDeltaTime = 0.02f;
+                
                 StartCoroutine(ShootTargetCoroutine());
-                //OnShoot?.Invoke(this, new OnShootEventArgs { targetUnit = movedUnit, shootingUnit = this.GetComponentInParent<Unit>(), bulletProjectilePrefab = bulletProjectilePrefab, shootPointTransform = shootPointTransform });
 
-                // if (hit)
-                // {
-                //     // Hit the unit!
-                //     int damageAmount = UnityEngine.Random.Range(30, 60);
-                //     movedUnit.GetHealthSystem().Damage(damageAmount);
-                // }
-
-                //movedUnit.Damage(weaponDamage);
             }
         }
     }

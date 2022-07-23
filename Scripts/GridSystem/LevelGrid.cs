@@ -165,6 +165,12 @@ public class LevelGrid : MonoBehaviour
         return gridObject.GetCoverType();
     }
 
+    public CoverType GetCoverTypeAtGridPosition(GridPosition gridPosition)
+    {
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        return gridObject.GetCoverType();
+    }
+
     public CoverType GetUnitCoverType(Vector3 worldPosition) // where I can add the is Wakable check
     {
         GridPosition gridPosition = gridSystem.GetGridPosition(worldPosition);

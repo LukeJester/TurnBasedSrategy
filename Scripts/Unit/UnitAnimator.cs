@@ -142,7 +142,7 @@ public class UnitAnimator : MonoBehaviour
 
     private void grenadeAction_OnThrowGrenade(object sender, EventArgs e)
     {
-        //animator.SetTrigger("grenade");
+        animator.SetTrigger("throw");
         //will first instaniate it in hand position
     }
 

@@ -195,25 +195,26 @@ public class Unit : MonoBehaviour
         // Invisible - 9
         // unit - 7
         // default - 0
-        //save l
-        //UnitVisual.gameObject.layer = 9;
+
         if (UnitVisual == null) // the OnDestroy function on destructable create is calling Fog Of War script which calls this when play ends
             return;
         ChangeLayerOfChildren(UnitVisual, 9);
         UnitWorldUI.gameObject.layer = 9;
-        // UnitVisual.gameObject.SetActive(false);
-        // UnitWorldUI.gameObject.SetActive(false);
+
+        MoveAction moveAction = GetComponentInChildren<MoveAction>();
+        moveAction.SetMoveSpeed(100);
     }
 
     public void ShowVisual()
     {
-        //UnitVisual.gameObject.layer = 7;
         if (UnitVisual == null)
             return;
         ChangeLayerOfChildren(UnitVisual, 7);
         UnitWorldUI.gameObject.layer = 7;
-        // UnitVisual.gameObject.SetActive(true);
-        // UnitWorldUI.gameObject.SetActive(true);
+
+        MoveAction moveAction = GetComponentInChildren<MoveAction>();
+        moveAction.reSetMoveSpeed();
+
     }
 
     private void ChangeLayerOfChildren(Transform root, int layerMask)
@@ -229,18 +230,6 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void ApplyExploasionToChildren(Transform root, float exploasionForce, Vector3 exploaionposition, float exploaionRange)
-    {
-        foreach (Transform child in root)
-        {
-            if (child.TryGetComponent<Rigidbody>(out Rigidbody childRigidbody))
-            {
-                childRigidbody.AddExplosionForce(exploasionForce, exploaionposition, exploaionRange);
-            }
-
-            ApplyExploasionToChildren(child, exploasionForce, exploaionposition, exploaionRange);
-        }
-    }
 
     private void healthSystem_OnDead(object sender, EventArgs e)
     {

@@ -33,7 +33,7 @@ public class UnitActionSystemUI : MonoBehaviour
         Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
 
         UpdateActionPoints();
-        CreatUnitActionButtons();
+        //CreatUnitActionButtons();
 
         CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
@@ -48,26 +48,26 @@ public class UnitActionSystemUI : MonoBehaviour
 
     private void CreatUnitActionButtons()
     {
-        // foreach(Transform buttonTransform in actionButtionContainerTransfrom)
-        // {
-        //     Destroy(buttonTransform.gameObject);
-        // }
+        foreach(Transform buttonTransform in actionButtionContainerTransfrom)
+        {
+            Destroy(buttonTransform.gameObject);
+        }
 
-        // actionButtionUIList.Clear();
+        actionButtionUIList.Clear();
 
-        // Unit selectedUnit =  UnitActionSystem.Instance.GetSelectedUnit();
+        Unit selectedUnit =  UnitActionSystem.Instance.GetSelectedUnit();
 
-        // if (selectedUnit == null)
-        //     return;
+        if (selectedUnit == null)
+            return;
             
-        // foreach(BaseAction baseAction in selectedUnit.GetBaseActionArray())
-        // {
-        //     Transform actionButtonTransform =  Instantiate(actionButtonPrefab, actionButtionContainerTransfrom);
-        //     ActionButtionUI actionButtionUI = actionButtonTransform.GetComponent<ActionButtionUI>();
-        //     actionButtionUI.SetBaseAction(baseAction);
+        foreach(BaseAction baseAction in selectedUnit.GetBaseActionArray())
+        {
+            Transform actionButtonTransform =  Instantiate(actionButtonPrefab, actionButtionContainerTransfrom);
+            ActionButtionUI actionButtionUI = actionButtonTransform.GetComponent<ActionButtionUI>();
+            actionButtionUI.SetBaseAction(baseAction);
 
-        //     actionButtionUIList.Add(actionButtionUI);
-        // }
+            actionButtionUIList.Add(actionButtionUI);
+        }
     }
 
     private void CreatUnitGroupActionButtons()
@@ -84,12 +84,10 @@ public class UnitActionSystemUI : MonoBehaviour
         if (selectedUnit == null)
             return;
 
-        List<BaseAction> actionList = new List<BaseAction>();
         List<ActionGroup> actionGroupList = new List<ActionGroup>();
 
         foreach (BaseAction baseAction in selectedUnit.GetBaseActionArray())
         {
-            actionList.Add(baseAction);
             actionGroupList.Add(baseAction.GetActionGroup());
         }
 
@@ -101,22 +99,25 @@ public class UnitActionSystemUI : MonoBehaviour
             GroupActionButtionUI groupActionButtionUI = groupActionButtonTransform.GetComponent<GroupActionButtionUI>();
             groupActionButtionUI.SetBaseActionGroup(actionGroup);
 
+            // add the actions to the action groups
             foreach (BaseAction baseAction in selectedUnit.GetBaseActionArray())
             {
                 if(baseAction.GetActionGroup() == actionGroup)
-                {
+                {   
+                    
                     groupActionButtionUI.AddToBaseActionList(baseAction);
+                    
                 }  
             }
 
             groupActionButtionUIList.Add(groupActionButtionUI);
-
         }
+
     }
 
     private void UnitActionSystem_OnSelectedUnitChanged(object sender, EventArgs e)
     {
-        CreatUnitActionButtons();
+        //CreatUnitActionButtons();
 
         CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
@@ -137,10 +138,10 @@ public class UnitActionSystemUI : MonoBehaviour
 
     private void UpdateSelectedVisual()
     {
-        foreach(GroupActionButtionUI groupActionButtionUI in groupActionButtionUIList)
-        {
-            groupActionButtionUI.UpdateSelectedVisual();
-        }
+        // foreach(GroupActionButtionUI groupActionButtionUI in groupActionButtionUIList)
+        // {
+        //     groupActionButtionUI.UpdateSelectedVisual();
+        // }
 
         // foreach(ActionButtionUI actionButtionUI in actionButtionUIList)
         // {
@@ -159,11 +160,17 @@ public class UnitActionSystemUI : MonoBehaviour
     private void Show()
     {
         //groupActionButtionContainerTransfrom.gameObject.SetActive(true);
+        groupActionButtionContainerTransfrom.GetComponent<CanvasGroup>().alpha = 1;
+
+        
     }
 
     private void Hide()
     {
         //groupActionButtionContainerTransfrom.gameObject.SetActive(false);
+        groupActionButtionContainerTransfrom.GetComponent<CanvasGroup>().alpha = 0;
+
+
     }
 
     private void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)

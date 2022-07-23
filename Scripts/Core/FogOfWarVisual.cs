@@ -41,6 +41,12 @@ public class FogOfWarVisual : MonoBehaviour
                 Transform gridVisual = Instantiate(pfFogOfWarGridVisual, LevelGrid.Instance.GetWorldPosition(gridPosition), Quaternion.identity);
                 gridVisual.parent = transform;
                 gridVisualArray[x, y] = gridVisual.Find("Visual").GetComponent<MeshRenderer>();
+
+                CoverType coverAtGridPosition = LevelGrid.Instance.GetCoverTypeAtGridPosition(gridPosition);
+                if (coverAtGridPosition == CoverType.Environment || coverAtGridPosition == CoverType.Full)
+                {
+                    gridVisualArray[x, y].enabled = false;
+                }
             }
         }
     }
@@ -53,6 +59,15 @@ public class FogOfWarVisual : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 MeshRenderer gridVisualMeshRenderer = gridVisualArray[x, y];
+
+                GridPosition gridPosition= new GridPosition(x,y);
+                CoverType coverAtGridPosition = LevelGrid.Instance.GetCoverTypeAtGridPosition(gridPosition);
+                if (coverAtGridPosition == CoverType.Environment || coverAtGridPosition == CoverType.Full)
+                {
+                    gridVisualMeshRenderer.enabled = false;
+                    return;
+                }
+    
                 gridVisualMeshRenderer.enabled = true;
             }
         }

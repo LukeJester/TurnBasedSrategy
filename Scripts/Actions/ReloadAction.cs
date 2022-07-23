@@ -13,6 +13,8 @@ public class ReloadAction : BaseAction
 
     private int reloadAPCost;
     private bool hasEnoughAmmoToShoot;
+    private float reloadTimer = 0;
+
 
     private void Start()
     {
@@ -24,7 +26,10 @@ public class ReloadAction : BaseAction
         if (!isActive)
             return;
 
-        onActionComplete();
+        reloadTimer += Time.deltaTime;
+
+        if (reloadTimer >= 1.5f )
+            onActionComplete();
     }
 
     public override string GetActionName()
@@ -63,6 +68,8 @@ public class ReloadAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
+        reloadTimer = 0;
+
         rangedWeapon.Reload();
 
         //FOR RELAOD ANIMATION

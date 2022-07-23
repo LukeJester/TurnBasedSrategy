@@ -15,16 +15,16 @@ public class GridSystemVisual : MonoBehaviour
         public Material material;
     }
 
-    public enum GridVisualType
-    {
-        White,
-        Blue,
-        Red,
-        Yellow,
-        RedSoft,
-        Green,
-        GreenSoft
-    }
+    // public enum GridVisualType
+    // {
+    //     White,
+    //     Blue,
+    //     Red,
+    //     Yellow,
+    //     RedSoft,
+    //     Green,
+    //     GreenSoft
+    // }
     
     [SerializeField] Transform GridSystemVisualSinglePrefab;
     [SerializeField] private List<GridVisualTypeMaterial> gridVisualTypeMaterialList;
@@ -93,7 +93,7 @@ public class GridSystemVisual : MonoBehaviour
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
-    private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    public void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
     {
         List<GridPosition> gridPositionList = new List<GridPosition>();
 
@@ -256,4 +256,15 @@ public class GridSystemVisual : MonoBehaviour
     //     visualsAreShowing = false;
     // }
 
+}
+
+public enum GridVisualType
+{
+    White,
+    Blue,
+    Red,
+    Yellow,
+    RedSoft,
+    Green,
+    GreenSoft
 }

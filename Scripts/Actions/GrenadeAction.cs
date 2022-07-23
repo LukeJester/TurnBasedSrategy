@@ -10,8 +10,14 @@ public class GrenadeAction : BaseAction
 
     [SerializeField] private Transform grenadeProjectilePrefab;
     [SerializeField] private Transform grenadeProjectileRasiusPrefab;
+    [SerializeField] private Transform handTransforms;
+    [SerializeField] private string progectileName;
 
     private Transform grenadeRangeTransform;
+    private GridPosition targetGridPosition;
+    private bool actionIsSelected = false;
+
+    GridVisualType gridVisualType;
 
     GrenadeProjectile grenadeProjectile;
 
@@ -22,9 +28,9 @@ public class GrenadeAction : BaseAction
         grenadeProjectile = grenadeProjectilePrefab.GetComponent<GrenadeProjectile>();
 
         UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+
+        AnimationEventHandler.OnAnyThrowActionAnimation += AnimationEventHandler_OnAnyThrowActionAnimation;
     }
-
-
 
     private void Update()
     {
@@ -32,11 +38,23 @@ public class GrenadeAction : BaseAction
         {
             grenadeRangeTransform.position = LevelGrid.Instance.SnapWorldPosition(MouseWorld.instance.transform.position);
         }
+
+        // if (!actionIsSelected)
+        //     return;
+        // ShowGridPositionsEffectedByProjectile();
+    }
+
+    private static void ShowGridPositionsEffectedByProjectile()
+    {
+        GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.instance.transform.position);
+        GridSystemVisual.Instance.HideAllGridPositions();
+
+        GridSystemVisual.Instance.ShowGridPositionRangeSquare(gridPosition, 1, GridVisualType.Red);
     }
 
     public override string GetActionName()
     {
-        return "Grenade";
+        return "Throw " + progectileName;
     }
 
     public override EnemyAIAction GetEnemyAIAction(GridPosition gridPosition)
@@ -53,7 +71,6 @@ public class GrenadeAction : BaseAction
         List<GridPosition> validGridPositionList = new List<GridPosition>();
 
         GridPosition UnitGridPosition = unit.GetGridPosition();
-        //GridPosition grenadeGridPosition = MouseWorld.instance.GetMousesCurentGridPosition();
 
         for (int x = -maxThrowDistance; x <= maxThrowDistance; x++)
         {
@@ -72,8 +89,6 @@ public class GrenadeAction : BaseAction
                 if (UnitGridPosition == testGridPosition)
                     continue; //already standing there
 
-                
-
                 validGridPositionList.Add(testGridPosition);
             }
         }
@@ -83,16 +98,35 @@ public class GrenadeAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        //will first instaniate it in hand position with grenade consumable / all consumables will be spawned in right hand
-        Transform greandeProjectileTransform =  Instantiate(grenadeProjectilePrefab, unit.GetWorldPosition(), Quaternion.identity);
-        // will throw grenade after short delay so it goes in mid throw animation
-        GrenadeProjectile grenadeProjectile = greandeProjectileTransform.GetComponent<GrenadeProjectile>();
-
-        OnThrowGrenade?.Invoke(this, EventArgs.Empty); // not used, but will be when we add throwing greande animation
-
-        grenadeProjectile.Setup(gridPosition, OnGrenadeBehaviorComplete);
+        StartCoroutine(ThrowItemCoroutine(gridPosition)); 
 
         ActionStart(onActionComplete);
+    }
+
+    IEnumerator ThrowItemCoroutine(GridPosition targetGridPosition)
+    {
+        this.targetGridPosition = targetGridPosition;
+
+        Vector3 aimDirection = (LevelGrid.Instance.GetWorldPosition(targetGridPosition) - unit.GetWorldPosition()).normalized;
+        float rotateSpeed = 5f;
+        unit.transform.forward = Vector3.Slerp(unit.transform.forward, aimDirection, rotateSpeed * Time.deltaTime);
+
+        while (Vector3.Distance(unit.transform.forward, aimDirection) > .1)
+        {
+            unit.transform.forward = Vector3.Slerp(unit.transform.forward, aimDirection, rotateSpeed * Time.unscaledDeltaTime);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        OnThrowGrenade?.Invoke(this, EventArgs.Empty);
+        yield return null;
+    }
+
+    private void SetUpThrownItem()
+    {
+        Transform greandeProjectileTransform = Instantiate(grenadeProjectilePrefab, unit.GetWorldPosition(), Quaternion.identity);
+        GrenadeProjectile grenadeProjectile = greandeProjectileTransform.GetComponent<GrenadeProjectile>();
+        grenadeProjectile.Setup(targetGridPosition, OnGrenadeBehaviorComplete);
     }
 
     public override ActionGroup GetActionGroup()
@@ -100,24 +134,37 @@ public class GrenadeAction : BaseAction
         return ActionGroup.Item;
     }
 
-    // spawns range prefab for greande
-    // spans one for each unit on the fild, how to only spawn for this one?
     private void UnitActionSystem_OnSelectedActionChanged(object sender, UnitActionSystem.OnSelectedAction e) 
     {
+        
+        
         if (grenadeRangeTransform != null)
         {
             Destroy(grenadeRangeTransform.gameObject);
         }
 
-        if (e.unitAction.GetActionName() == "Grenade")
+        if (e.unitAction == this)
         {
+            actionIsSelected = true;
+
             grenadeRangeTransform = Instantiate(grenadeProjectileRasiusPrefab, LevelGrid.Instance.SnapWorldPosition(MouseWorld.instance.transform.position), Quaternion.identity);
-            grenadeRangeTransform.localScale = Vector3.one * (GetGrenadeTileRange() * LevelGrid.Instance.GetCellSize() + 1.3f);
+            grenadeRangeTransform.localScale = Vector3.one * (GetGrenadeTileRange() * LevelGrid.Instance.GetCellSize() + 1.9f);
         }
+        else
+        {
+            actionIsSelected = false;
+        }
+    }
+
+    private void AnimationEventHandler_OnAnyThrowActionAnimation(object sender, AnimationEventHandler.OnAnyThrow e)
+    {
+        if (e.unit == unit)
+            SetUpThrownItem();
     }
 
     private void OnGrenadeBehaviorComplete()
     {
+
         ActionComplete();
     }
 

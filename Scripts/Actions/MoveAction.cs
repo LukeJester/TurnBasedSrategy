@@ -16,6 +16,13 @@ public class MoveAction : BaseAction
 
     private List<Vector3> positionList;
     private int curretnPositionIndex;
+    private float orriginalMoveSpeed;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        orriginalMoveSpeed = moveSpeed;
+    }
 
     private void Update()
     {
@@ -140,5 +147,15 @@ public class MoveAction : BaseAction
     public override ActionGroup GetActionGroup()
     {
         return ActionGroup.Movment;
+    }
+
+    public void reSetMoveSpeed()
+    {
+        moveSpeed =  orriginalMoveSpeed;
+    }
+
+    public void SetMoveSpeed(float newMoveSpeed)
+    {
+         moveSpeed = newMoveSpeed;
     }
 }

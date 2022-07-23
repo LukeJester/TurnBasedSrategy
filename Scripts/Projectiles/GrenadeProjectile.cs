@@ -25,7 +25,7 @@ public class GrenadeProjectile : MonoBehaviour
     private void Start()
     {
         cellSize = LevelGrid.Instance.GetCellSize();
-        explosionRadius = explosionRadiusInTiles; // why dont i need to multiply by cell size for it to reach the crrect raduis?
+        explosionRadius = explosionRadiusInTiles + 1f; // why dont i need to multiply by cell size for it to reach the crrect raduis?
     }
 
     private void Update()

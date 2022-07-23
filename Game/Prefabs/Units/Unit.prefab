@@ -344,6 +344,8 @@ MonoBehaviour:
     type: 3}
   grenadeProjectileRasiusPrefab: {fileID: 7337947327766652889, guid: af9d8cf8adba8e748a36f78b31909bd7,
     type: 3}
+  handTransforms: {fileID: 6875625788727781174}
+  progectileName: Grenade
 --- !u!114 &1108324422991862251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1412,8 +1414,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6878476770568811368}
   - component: {fileID: 6789168001751595944}
+  - component: {fileID: 4888980015522448518}
   m_Layer: 7
-  m_Name: Character_Dummy_Female_01
+  m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1461,6 +1464,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4888980015522448518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6872690925591762336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5ce4e8cffaa0a409d59ddd3443320b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6872726800582004338
 GameObject:
   m_ObjectHideFlags: 0
