@@ -39,6 +39,7 @@ public class UnitActionSystem : MonoBehaviour
 
     private void Start()
     {
+
         SetSelectedUnit(selectedUnit); // I can change this the unit who has first turn
     }
     private void Update()
@@ -117,6 +118,7 @@ public class UnitActionSystem : MonoBehaviour
 
     private void SetSelectedUnit(Unit unit)
     {
+        
         selectedUnit = unit;
         if(selectedUnit == null)
             return;

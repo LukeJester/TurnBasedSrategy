@@ -20,6 +20,7 @@ public class GroupActionButtionUI : MonoBehaviour
     private ActionGroup actionGroup;
     private List<BaseAction> baseActionList;
     private List<ActionButtionUI> actionButtionUIList;
+    private CanvasGroup canvasGroup;
 
     private bool isSelected;
 
@@ -28,6 +29,7 @@ public class GroupActionButtionUI : MonoBehaviour
     {
         actionButtionUIList = new List<ActionButtionUI>();
         baseActionList = new List<BaseAction>();
+        canvasGroup = GetComponentInParent<CanvasGroup>();
     }
 
     public void SetBaseActionGroup(ActionGroup actionGroup)
@@ -40,6 +42,9 @@ public class GroupActionButtionUI : MonoBehaviour
 
     private void OnUIGroupButtonClick()
     {
+        if (canvasGroup.alpha == 0 )
+            return;
+
         if(isSelected)
         {
             SetIsSelected();

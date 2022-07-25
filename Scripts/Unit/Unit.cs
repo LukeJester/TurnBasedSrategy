@@ -24,12 +24,14 @@ public class Unit : MonoBehaviour
     private CoverType currentCoverType;
     private CoverType newCoverType;
     private List<CoverDirection> coverDirectionList;
+    private StatusEffects statusEffects;
     
 
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
         baseActionArray = GetComponentsInChildren<BaseAction>();
+        statusEffects = GetComponent<StatusEffects>();
     }
 
     private void Start()
@@ -183,6 +185,11 @@ public class Unit : MonoBehaviour
         healthSystem.Heal(healAmount);
     }
 
+    public void ApplyStatusEffect(StatusEffect statusEffect, int duration)
+    {
+        statusEffects.ApplyStatusEffect(statusEffect, duration);
+    }
+
     public bool IsVisible()
     {
         //test if laer mask is invisable?
@@ -265,5 +272,10 @@ public class Unit : MonoBehaviour
     public float GetHealthNormilized()
     {
         return healthSystem.GetHealthNormilized();
+    }
+
+    public Transform GetUnitVisual()
+    {
+        return UnitVisual;
     }
 }

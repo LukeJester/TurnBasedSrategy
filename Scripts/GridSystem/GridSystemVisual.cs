@@ -152,11 +152,14 @@ public class GridSystemVisual : MonoBehaviour
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                 break;
 
-            case GrenadeAction grenadeAction: // would i add the explaoion grid effected area here?
+            case GrenadeAction grenadeAction: 
                 gridVisualType = GridVisualType.RedSoft;
 
-                //Only shows the grid positions when the action is selected and only grid position are highlighted when not already redsoft, could fix with // code above
-                //ShowGridPositionRangeSquare(MouseWorld.instance.GetMousesCurentGridPosition(), grenadeAction.GetGrenadeProjectile().GetExplosionRadiusInTiles(), GridVisualType.Red);
+                break;
+                
+            case MolotovAction molotovAction:
+                gridVisualType = GridVisualType.RedSoft;
+
                 break;
 
             case createCrateAction createCrateAction:

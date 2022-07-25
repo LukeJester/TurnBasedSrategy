@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 4559254497327803167}
   - component: {fileID: 2655773826509160435}
   - component: {fileID: 1108324422991862251}
+  - component: {fileID: 344871444919126709}
   m_Layer: 7
   m_Name: StanderedActions
   m_TagString: Untagged
@@ -359,6 +360,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healingVFX: {fileID: 4007389156555894, guid: da7875cab77480d49972b42ca872af40, type: 3}
+--- !u!114 &344871444919126709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5129275962544800689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5359ecc5c73b233448b6ac6e1a579795, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grenadeProjectilePrefab: {fileID: 5337487113980694922, guid: 59622ace75b47cf4e853f5dda6dae5ab,
+    type: 3}
+  grenadeProjectileRasiusPrefab: {fileID: 7337947327766652889, guid: af9d8cf8adba8e748a36f78b31909bd7,
+    type: 3}
+  handTransforms: {fileID: 6875625788727781174}
+  progectileName: Molotov
 --- !u!1 &5467733426252857680
 GameObject:
   m_ObjectHideFlags: 0
@@ -2882,6 +2901,7 @@ GameObject:
   - component: {fileID: 699700209613080574}
   - component: {fileID: 6009573026556926043}
   - component: {fileID: 1606783330504563202}
+  - component: {fileID: 5015229503558564936}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -2979,6 +2999,23 @@ MonoBehaviour:
   ragdollPrefab: {fileID: 6873834435301904757, guid: 2f39f872492da364b95ff9f1862140c5,
     type: 3}
   originalRootBones: {fileID: 6875669134132180068}
+--- !u!114 &5015229503558564936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6873834435301904754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13c13ccbf3ea649408dd5dc0affa4801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  immuneStatusEffectList: 
+  resistantStatusEffectList: 
+  vulnerableStatusEffectList: 
+  statusEffectVisualsList:
+  - {fileID: 4373546466968728, guid: d5e400a2a0d155d4db9970614680534f, type: 3}
 --- !u!1 &6873834435483318862
 GameObject:
   m_ObjectHideFlags: 0

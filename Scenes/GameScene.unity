@@ -715,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 5.999993, z: -10}
+  m_FollowOffset: {x: 0, y: 10.95921, z: -10}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -936,8 +936,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.2669333, y: 0.000000040617547, z: -0.000000011250395, w: 0.963715}
-  m_LocalPosition: {x: -5.143815, y: 9.968093, z: -5.3244}
+  m_LocalRotation: {x: 0.40370774, y: -0.000000021675811, z: 0.000000009564769, w: 0.914888}
+  m_LocalPosition: {x: -5.143815, y: 14.927311, z: -5.3244}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5182,8 +5182,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1541312434}
-  m_LocalRotation: {x: 0.2669333, y: 0.000000040617547, z: -0.000000011250395, w: 0.963715}
-  m_LocalPosition: {x: 1.88, y: 5.999993, z: -7.94}
+  m_LocalRotation: {x: 0.40370774, y: -0.000000021675811, z: 0.000000009564769, w: 0.914888}
+  m_LocalPosition: {x: 1.88, y: 10.95921, z: -7.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6195,6 +6195,11 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5015229503558564936, guid: 2a8f802465f66d847a9e6a043b681f81,
+        type: 3}
+      propertyPath: immuneStatusEffectList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6872690925591762336, guid: 2a8f802465f66d847a9e6a043b681f81,
         type: 3}
       propertyPath: m_IsActive
@@ -6223,7 +6228,7 @@ PrefabInstance:
     - target: {fileID: 6873834435301904757, guid: 2a8f802465f66d847a9e6a043b681f81,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6873834435301904757, guid: 2a8f802465f66d847a9e6a043b681f81,
         type: 3}

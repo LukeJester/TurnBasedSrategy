@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrenadeAction : BaseAction
+public class MolotovAction : BaseAction
 {
 
-    public event EventHandler OnThrowGrenade;
+    public event EventHandler OnThrowMolotov;
 
     [SerializeField] private Transform grenadeProjectilePrefab;
     [SerializeField] private Transform grenadeProjectileRasiusPrefab;
@@ -103,7 +103,7 @@ public class GrenadeAction : BaseAction
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
         wasThrown = true;
-
+        
         StartCoroutine(ThrowItemCoroutine(gridPosition)); 
 
         ActionStart(onActionComplete);
@@ -124,7 +124,7 @@ public class GrenadeAction : BaseAction
         }
 
         yield return new WaitForSeconds(0.1f);
-        OnThrowGrenade?.Invoke(this, EventArgs.Empty);
+        OnThrowMolotov?.Invoke(this, EventArgs.Empty);
         yield return null;
     }
 
@@ -169,7 +169,6 @@ public class GrenadeAction : BaseAction
             wasThrown = false;
             SetUpThrownItem();
         }
-            
     }
 
     private void OnGrenadeBehaviorComplete()

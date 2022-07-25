@@ -9,6 +9,10 @@ public class GridObject
     private List<Unit> unitList;
     private IInteractable interactable;
     private CoverType coverType;
+    //this would be used to have gird positions effected by SE like lighting it on fire
+    //donw want to have the GO incarge of this/ have a pointer from the level change event to keep track when the effect wears off.
+    private StatusEffect statusEffect;
+    private int statusEffectTime;
 
     private bool canBeInteravtedWith; // bool I can chege when making hte level? make it auto if a 3d ojcet is in its area
 
@@ -80,6 +84,18 @@ public class GridObject
     public CoverType GetCoverType()
     {
         return coverType;
+    }
+
+    //might want to make StatusEffect a list, b/c right now only one SE can be active on a tile at a time
+    // and if you place a new one it destroys the old one.
+    public void SetStatusEffect(StatusEffect statusEffect) 
+    {
+        this.statusEffect = statusEffect;
+    }
+
+    public StatusEffect GetStatusEffect()
+    {
+        return statusEffect;
     }
 
 }

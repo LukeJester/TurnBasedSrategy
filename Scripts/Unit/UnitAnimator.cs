@@ -44,6 +44,12 @@ public class UnitAnimator : MonoBehaviour
             grenadeAction.OnThrowGrenade += grenadeAction_OnThrowGrenade;
         }
 
+        MolotovAction molotovAction = GetComponentInChildren<MolotovAction>();
+        if (molotovAction != null)
+        {
+            molotovAction.OnThrowMolotov += molotovAction_OnThrowMolotov;
+        }
+
         OverwatchAction overwatchAction = GetComponentInChildren<OverwatchAction>();
         if (overwatchAction != null)
         {
@@ -62,6 +68,7 @@ public class UnitAnimator : MonoBehaviour
         MeleeAction.OnAnyMeleeDodge += meleeAction_OnAnyMeleeDodge;
     }
 
+    
     private void Start()
     {
         EquipRife();
@@ -143,8 +150,13 @@ public class UnitAnimator : MonoBehaviour
     private void grenadeAction_OnThrowGrenade(object sender, EventArgs e)
     {
         animator.SetTrigger("throw");
-        //will first instaniate it in hand position
     }
+
+    private void molotovAction_OnThrowMolotov(object sender, EventArgs e)
+    {
+        animator.SetTrigger("throw");
+    }
+
 
     private void overwatchAction_OnShoot(object sender, OverwatchAction.OnShootEventArgs e)
     {
