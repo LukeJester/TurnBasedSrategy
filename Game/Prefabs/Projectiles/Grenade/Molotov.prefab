@@ -185,7 +185,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   appliedStatusEffect: 1
-  appliedStatusEffectDuration: 2
+  appliedStatusEffectDuration: 3
   canDestroyObjects: 0
 --- !u!135 &6488588564484785361
 SphereCollider:

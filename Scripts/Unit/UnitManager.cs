@@ -8,6 +8,9 @@ public class UnitManager : MonoBehaviour
 
     public static UnitManager Instance { get; private set; }
 
+    public static event EventHandler OnAnyUnitAddedToUnitManager;
+    public static event EventHandler OnAnyUnitRemovedFromUnitManager;
+
     private List<Unit> unitList;
     private List<Unit> frendlyUnitList;
     private List<Unit> enemyUnitList;
@@ -46,7 +49,9 @@ public class UnitManager : MonoBehaviour
         else
         {
             frendlyUnitList.Add(unit);
+            OnAnyUnitAddedToUnitManager?.Invoke(this, EventArgs.Empty);
         }
+
     }
 
     private void Unit_OnAnyUnitDead(object sender, EventArgs e)
@@ -62,7 +67,9 @@ public class UnitManager : MonoBehaviour
         else
         {
             frendlyUnitList.Remove(unit);
+            OnAnyUnitRemovedFromUnitManager?.Invoke(this, EventArgs.Empty);
         }
+
     }
 
     public List<Unit> GetUnitList()

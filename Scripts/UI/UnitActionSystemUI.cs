@@ -33,7 +33,7 @@ public class UnitActionSystemUI : MonoBehaviour
         Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
 
         UpdateActionPoints();
-        //CreatUnitActionButtons();
+        //CreatUnitActionButtons(); 
 
         CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
@@ -122,8 +122,6 @@ public class UnitActionSystemUI : MonoBehaviour
         CreatUnitGroupActionButtons();
         UpdateSelectedVisual();
         UpdateActionPoints();
-
-        
     }
 
     private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)

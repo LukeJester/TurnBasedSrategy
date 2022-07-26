@@ -69,9 +69,8 @@ public class GrenadeProjectile : MonoBehaviour
                     targetUnit.Damage(explosionDamage);
 
                     if (appliedStatusEffect == StatusEffect.None)
-                        return;
+                        continue;
 
-                    //Debug.Log(appliedStatusEffect);
                     targetUnit.ApplyStatusEffect(appliedStatusEffect, appliedStatusEffectDuration);
                 }
 
@@ -111,9 +110,8 @@ public class GrenadeProjectile : MonoBehaviour
                 targetUnit.Damage(explosionDamage);
 
                 if (appliedStatusEffect == StatusEffect.None)
-                    return;
+                    continue;
 
-                //Debug.Log(appliedStatusEffect);
                 targetUnit.ApplyStatusEffect(appliedStatusEffect, appliedStatusEffectDuration);
             }
 

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class RangedWeapon : MonoBehaviour
-{
+{    
     // Weapon Stats
     [SerializeField] int maxShootDistance = 10;
     [SerializeField] int fullAccuracyMaximunShootDistance = 5;
@@ -105,5 +106,15 @@ public class RangedWeapon : MonoBehaviour
         if (currentAmmoInClip == maxAmmoPerClip)
             return true;
         else return false;
+    }
+
+    public int GetCurrentAmmo()
+    {
+        return currentAmmoInClip;
+    }
+
+    public int GetMaxAmmo()
+    {
+        return maxAmmoPerClip;
     }
 }

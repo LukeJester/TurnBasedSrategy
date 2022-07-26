@@ -16,6 +16,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private bool isEnemy;
     [SerializeField] private Transform UnitVisual;
     [SerializeField] private Transform UnitWorldUI;
+    [SerializeField] private Sprite unitsFace;
 
     private GridPosition gridPosition;
     private HealthSystem healthSystem;
@@ -277,5 +278,10 @@ public class Unit : MonoBehaviour
     public Transform GetUnitVisual()
     {
         return UnitVisual;
+    }
+
+    public Sprite GetUnitsFace()
+    {
+        return unitsFace;
     }
 }
