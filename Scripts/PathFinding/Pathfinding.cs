@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class Pathfinding : MonoBehaviour
 
     [SerializeField] private Transform gridDebugObjectPrefab;
     [SerializeField] private LayerMask ObstaclesLayerMask;
+    [SerializeField] private LayerMask wallLayerMask;
 
     private int width;
     private int height;
@@ -57,8 +59,23 @@ public class Pathfinding : MonoBehaviour
                         // flying over the rock or walking around it
                         // need a way to know if a grid is flyable EI, crates can be flown over but not wall with roofs.
                     }
+                // Add the wall directions to the the pathnodes
+                RaycastHit rayOut;
+                Physics.Raycast(worldPosition + Vector3.down * rayCastOffsetDistance, Vector3.up, out rayOut);
+                if (rayOut.collider != null && rayOut.collider.GetComponent<Floor>())
+                {
+                    Floor floor = rayOut.collider.GetComponent<Floor>();
+                    GetNode(x, z).AddWallDirection(floor.GetAllWallDirections());
+                    SetWallCover();
+                }
             }
         }
+    }
+
+    private void SetWallCover()
+    {
+        //Cehck if wall have cover, set its GP with matching cover direction, then do that for hte opposite side
+        //EX) east wall GP gets east cover, then give GP x+1 West Cover
     }
 
     public List<GridPosition> FindPath(GridPosition startGridPosition, GridPosition endGridPosition, out int pathLength)
@@ -113,7 +130,7 @@ public class Pathfinding : MonoBehaviour
                     continue;
                 }
 
-                //test if enemy unit is at the position, then you cant walk throw them!
+                //test if enemy unit is at the position, then you cant walk throgh them!
                 // only stops you from walking through enimes, not the other way around. Hope their IA dosent make this noticable
                 // this will become noticable when a melee only enamy priorotises the most engered and walks throw your tank to get to the ingered guy
                 if(LevelGrid.Instance.getUnitAtGridPosition(neighborNode.GetGridPosition()) != null)
@@ -184,15 +201,18 @@ public class Pathfinding : MonoBehaviour
         if(gridPosition.x - 1 >= 0)
         {
             //Left Node
-            neighborList.Add(GetNode(gridPosition.x - 1, gridPosition.z + 0));
+            if (!(GetNode(gridPosition.x - 1, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x - 1, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.East)) && !(GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.West)))
+            {
+                neighborList.Add(GetNode(gridPosition.x - 1, gridPosition.z + 0));
+            }
             
-            if(gridPosition.z + 1 < gridSystem.GetHeight())
+            if( gridPosition.z + 1 < gridSystem.GetHeight() && GetNode(gridPosition.x - 1, gridPosition.z + 1).GetWallDirections() == null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() == null)
             {
                 //Left Up Node
                 neighborList.Add(GetNode(gridPosition.x - 1, gridPosition.z + 1));
             }
 
-            if (gridPosition.z - 1 >= 0)
+            if (gridPosition.z - 1 >= 0 && GetNode(gridPosition.x - 1, gridPosition.z - 1).GetWallDirections() == null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() == null)
             {
                 //Left Down Node
                 neighborList.Add(GetNode(gridPosition.x - 1, gridPosition.z - 1));
@@ -201,15 +221,18 @@ public class Pathfinding : MonoBehaviour
         if (gridPosition.x + 1 < gridSystem.GetWidth())
         {
             //Right Node
-            neighborList.Add(GetNode(gridPosition.x + 1, gridPosition.z + 0));
+            if (!(GetNode(gridPosition.x + 1, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x + 1, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.West)) && !(GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.East)))
+            {
+                neighborList.Add(GetNode(gridPosition.x + 1, gridPosition.z + 0));
+            }
            
-            if (gridPosition.z + 1 < gridSystem.GetHeight())
+            if ( gridPosition.z + 1 < gridSystem.GetHeight() && GetNode(gridPosition.x + 1, gridPosition.z + 1).GetWallDirections() == null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() == null )
             {
                 //Right Up Node
                 neighborList.Add(GetNode(gridPosition.x + 1, gridPosition.z + 1));
             }
             
-            if (gridPosition.z - 1 >= 0)
+            if (gridPosition.z - 1 >= 0 && GetNode(gridPosition.x + 1, gridPosition.z - 1).GetWallDirections() == null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() == null ) 
             {
                 //Right Down Node
                 neighborList.Add(GetNode(gridPosition.x + 1, gridPosition.z - 1));
@@ -219,12 +242,18 @@ public class Pathfinding : MonoBehaviour
         if (gridPosition.z + 1 < gridSystem.GetHeight())
         {
             //Up Node
-            neighborList.Add(GetNode(gridPosition.x + 0, gridPosition.z + 1));
+            if (!(GetNode(gridPosition.x + 0, gridPosition.z + 1).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z + 1).GetWallDirections().Contains(Wall.WallDirection.South)) && !(GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.North))) 
+            {
+                neighborList.Add(GetNode(gridPosition.x + 0, gridPosition.z + 1));
+            }
         }
         if (gridPosition.z - 1 >= 0)
         {
             //Down Node
-            neighborList.Add(GetNode(gridPosition.x + 0, gridPosition.z - 1));
+            if (!(GetNode(gridPosition.x + 0, gridPosition.z - 1).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z - 1).GetWallDirections().Contains(Wall.WallDirection.North)) && !(GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections() != null && GetNode(gridPosition.x + 0, gridPosition.z + 0).GetWallDirections().Contains(Wall.WallDirection.South)))
+            {
+                neighborList.Add(GetNode(gridPosition.x + 0, gridPosition.z - 1));
+            }
         }
 
         return neighborList;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PathNode 
@@ -11,7 +12,7 @@ public class PathNode
     private PathNode cameFromPathNode;
     private bool isWalkable = true;
     //private bool isFlyable = true; // pathfinding for flying enemies
-
+    private List<Wall.WallDirection> wallDirectionList;
 
     public PathNode(GridPosition gridPosition)
     {
@@ -91,4 +92,24 @@ public class PathNode
     // {
     //     this.isFlyable = isFlyable;
     // }
+
+    public void AddWallDirection(Wall.WallDirection wallDirection)
+    {
+        wallDirectionList.Add(wallDirection);
+    }
+
+    public void AddWallDirection(List<Wall.WallDirection> wallDirectionList)
+    {
+        // foreach(Wall.WallDirection wallDirection in wallDirectionList.ToList())
+        // {
+        //     wallDirectionList.Add(wallDirection);
+        // }
+
+        this.wallDirectionList = wallDirectionList;
+    }
+
+    public List<Wall.WallDirection> GetWallDirections()
+    {
+        return wallDirectionList;
+    }
 }
